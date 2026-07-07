@@ -1,0 +1,20 @@
+{
+  "name": "Piscines de Toulouse — Écran d'info estival",
+  "short_name": "Piscines TLS",
+  "description": "Statut ouvert/fermé en direct, carte, calendrier et horaires d'été des piscines municipales de Toulouse.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#06161e",
+  "theme_color": "#0e93ab",
+  "categories": ["sports", "lifestyle", "navigation"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
