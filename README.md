@@ -51,8 +51,15 @@ rénovation, incident) s'édite à la main lors d'un passage.
 > de l'environnement de build bloque le site officiel, données recoupées via recherche).
 > Vérifiez toujours l'horaire du jour sur le
 > [site officiel](https://metropole.toulouse.fr/sortir/sport/les-piscines-toulousaines).
-> `Jean Boiteux — Espace Job` = la piscine du quartier Sept Deniers (même équipement).
-> Horaires de Jean Boiteux et La Ramée Plage à confirmer.
+> `Jean Boiteux — Espace Job` = la piscine du quartier Sept Deniers (même équipement),
+> **fermée au public l'été**. Horaires de La Ramée Plage à confirmer.
+
+### Actualisation automatique (Routine)
+
+Une session Claude Code planifiée peut ré-actualiser les données toute seule en suivant
+[`tools/refresh-instructions.md`](tools/refresh-instructions.md) : elle vérifie l'alerte
+en cours, les horaires et les actus (via recherche web), lance `node tools/check.mjs`,
+puis commit/push sur la branche. Garde-fou intégrité : `tools/check.mjs`.
 
 ---
 
@@ -66,6 +73,8 @@ rénovation, incident) s'édite à la main lors d'un passage.
   points restent cliquables. En hébergé/local, la carte s'affiche pleinement.
 
 ## 📱 Mobile
+
+**Tuto complet pas à pas : [`docs/INSTALL-MOBILE.md`](docs/INSTALL-MOBILE.md)** (PWA + Capacitor Android/iOS).
 
 - **PWA** : sur Android (Chrome) ou iOS (Safari) → « Ajouter à l'écran d'accueil ».
 - **App Android native** (`.apk`/Play Store) via **Capacitor** — enveloppe ce même
