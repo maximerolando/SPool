@@ -52,18 +52,17 @@ const e2 = await shot("dark", 1280, 900, SP + "/shot-live-dark.png");
 const e3 = await shot("light", 390, 844, SP + "/shot-mobile.png");
 
 // vues supplémentaires : cliquer les onglets
-async function shotView(view, out) {
+async function shotView(view, out, wait) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 950 }, colorScheme: "light" });
   const errs = []; page.on("pageerror", (e) => errs.push(String(e)));
-  await page.goto("file://" + root + "index.html", { waitUntil: "networkidle" });
+  await page.goto("file://" + root + "index.html", { waitUntil: "domcontentloaded" });
   await page.click(`.tab[data-view="${view}"]`);
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(wait || 600);
   await page.screenshot({ path: out });
   await page.close();
-  console.log("✓ " + out + (errs.length ? "  ⚠ " + errs.join(" | ") : ""));
+  console.log("✓ " + out + (errs.length ? "  ⚠ " + errs.join(" | ") : "  (ok)"));
 }
-await shotView("carte", SP + "/shot-carte.png");
-await shotView("calendrier", SP + "/shot-calendrier.png");
+await shotView("carte", SP + "/shot-carte.png", 2500);
 await shotView("annuaire", SP + "/shot-annuaire.png");
 
 await browser.close();
