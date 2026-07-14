@@ -5,7 +5,7 @@
 import { readFileSync } from "node:fs";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const start = html.indexOf("const META =");
+const start = html.indexOf("let META =");
 const end = html.indexOf("MOTEUR");
 if (start < 0 || end < 0) { console.error("✗ Blocs de données introuvables"); process.exit(1); }
 let block = html.slice(start, end);

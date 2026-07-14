@@ -723,11 +723,11 @@ button{font-family:inherit;color:inherit}
 ::selection{background:var(--brand);color:#fff}
 :focus-visible{outline:2.5px solid var(--brand);outline-offset:2px;border-radius:6px}
 .tnum{font-variant-numeric:tabular-nums}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(14px,3vw,30px)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 max(clamp(14px,3vw,30px), env(safe-area-inset-right,0px)) 0 max(clamp(14px,3vw,30px), env(safe-area-inset-left,0px))}
 .hide{display:none!important}
 
 /* top bar + tabs */
-.topbar{position:sticky;top:0;z-index:1000;backdrop-filter:blur(14px);background:color-mix(in srgb, var(--bg) 80%, transparent);border-bottom:1px solid var(--line-soft)}
+.topbar{position:sticky;top:0;z-index:1000;backdrop-filter:blur(14px);background:color-mix(in srgb, var(--bg) 80%, transparent);border-bottom:1px solid var(--line-soft);padding-top:env(safe-area-inset-top,0px)}
 .topbar-inner{display:flex;align-items:center;gap:12px;padding:10px clamp(14px,3vw,30px);max-width:var(--maxw);margin:0 auto}
 .brandmark{display:flex;align-items:center;gap:11px;min-width:0}
 .logo{width:36px;height:36px;flex:0 0 auto;border-radius:11px;display:grid;place-items:center;background:linear-gradient(150deg,var(--brand),var(--brand-strong));color:#fff;box-shadow:var(--shadow)}
@@ -741,7 +741,8 @@ button{font-family:inherit;color:inherit}
 .icon-btn:hover{color:var(--ink);border-color:var(--brand);transform:translateY(-1px)}
 .icon-btn svg{width:19px;height:19px}
 .kiosk-progress{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--brand);transition:width .3s linear}
-.tabs{position:sticky;top:57px;z-index:990;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+@media (max-width:540px){.brandmark span{display:none}.season-pill{display:none}.topbar-inner{gap:8px}}
+.tabs{position:sticky;top:calc(57px + env(safe-area-inset-top,0px));z-index:990;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
 .tabs-inner{display:flex;gap:4px;max-width:var(--maxw);margin:0 auto;padding:8px clamp(14px,3vw,30px);overflow-x:auto;scrollbar-width:none}
 .tabs-inner::-webkit-scrollbar{display:none}
 .tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:11px;border:1px solid transparent;background:transparent;color:var(--ink-2);font-size:14px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
@@ -767,24 +768,30 @@ button{font-family:inherit;color:inherit}
 .alert .a-b b{font-weight:700}
 
 /* ===== EN DIRECT ===== */
-.live-top{display:grid;grid-template-columns:1.05fr 1fr;gap:16px;align-items:stretch;margin-bottom:16px}
-@media (max-width:860px){.live-top{grid-template-columns:1fr}}
-.clockcard{background:linear-gradient(155deg,var(--brand-strong),var(--brand));color:#fff;border-radius:var(--radius);padding:clamp(20px,3vw,28px);position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
-.clockcard .caustics{position:absolute;inset:0;opacity:.5;mix-blend-mode:soft-light;background:radial-gradient(120px 120px at 20% 30%,#fff,transparent 60%),radial-gradient(160px 120px at 80% 20%,#fff,transparent 60%),radial-gradient(200px 160px at 60% 90%,#fff,transparent 60%);animation:drift 16s ease-in-out infinite alternate}
-@keyframes drift{to{transform:translate3d(0,-14px,0) scale(1.06)}}
-.clockcard>*{position:relative;z-index:1}
-.cc-date{font-size:13.5px;font-weight:600;opacity:.92;text-transform:capitalize}
-.cc-time{font-family:var(--font-display);font-weight:800;font-size:clamp(3rem,9vw,5rem);line-height:.95;letter-spacing:-.03em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
-.cc-time small{font-size:.34em;font-weight:600;opacity:.75;margin-left:.12em}
-.cc-openrow{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
-.cc-bignum{font-family:var(--font-display);font-weight:800;font-size:clamp(2rem,6vw,2.9rem);line-height:1;font-variant-numeric:tabular-nums}
-.cc-openrow .lbl{font-size:13.5px;opacity:.92;font-weight:600;max-width:16ch}
-.cc-mini{flex:1 1 120px;min-width:110px}
-.cc-mini .bar{height:9px;border-radius:999px;overflow:hidden;display:flex;gap:2px;background:rgba(255,255,255,.2)}
-.cc-mini .bar i{display:block;height:100%}
-.cc-mini .bar i.o{background:#fff}.cc-mini .bar i.c{background:rgba(255,255,255,.3)}
-.cc-mini .mlbl{font-size:11px;opacity:.9;margin-top:6px;display:flex;justify-content:space-between}
-.live-side{display:flex;flex-direction:column;gap:16px}
+.nowstrip{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,var(--brand-strong),var(--brand));color:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 18px;margin-bottom:16px}
+.ns-time{display:flex;flex-direction:column;line-height:1}
+.ns-time b{font-family:var(--font-display);font-weight:800;font-size:clamp(1.7rem,4.5vw,2.2rem);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ns-time span{font-size:11.5px;opacity:.9;font-weight:600;text-transform:capitalize;margin-top:3px}
+.ns-sep{width:1px;align-self:stretch;background:rgba(255,255,255,.28)}
+.ns-open{display:flex;align-items:center;gap:9px}
+.ns-open b{font-family:var(--font-display);font-weight:800;font-size:clamp(1.7rem,4.5vw,2.2rem);line-height:1;font-variant-numeric:tabular-nums}
+.ns-open span{font-size:11px;line-height:1.25;font-weight:600;opacity:.92}
+.ns-bar{flex:1 1 120px;min-width:110px}
+.ns-bar .bar{height:8px;border-radius:999px;overflow:hidden;display:flex;gap:2px;background:rgba(255,255,255,.22)}
+.ns-bar .bar i{display:block;height:100%}
+.ns-bar .bar i.o{background:#fff}.ns-bar .bar i.c{background:rgba(255,255,255,.32)}
+.ns-bar .mlbl{font-size:10.5px;opacity:.9;margin-top:5px;display:flex;justify-content:space-between}
+.ns-chip{border:none;background:rgba(255,255,255,.18);color:#fff;font-weight:700;font-size:12px;padding:7px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.ns-chip:hover{background:rgba(255,255,255,.3)}
+.alert{padding:11px 14px}
+.alert .a-t{font-size:14px}
+.alert .a-b{font-size:12px}
+.a-close{margin-left:auto;flex:0 0 auto;width:30px;height:30px;border-radius:9px;border:none;background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:grid;place-items:center;transition:.15s}
+.a-close:hover{background:rgba(255,255,255,.32)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;pointer-events:none;z-index:3000;background:var(--ink);color:var(--surface);font-size:13px;font-weight:600;padding:10px 16px;border-radius:11px;box-shadow:var(--shadow-lg);transition:.25s;max-width:90vw;text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.icon-btn.spinning svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .facts .facts-row{display:flex;gap:10px}
 .fact{flex:1;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:12px;padding:11px 6px;text-align:center}
 .fact .f-n{font-family:var(--font-display);font-weight:800;font-size:1.55rem;color:var(--brand-ink);display:block;line-height:1;font-variant-numeric:tabular-nums}
@@ -847,7 +854,7 @@ button{font-family:inherit;color:inherit}
 .map-fallback.show{display:block}
 
 /* ===== ANNUAIRE ===== */
-.controls{position:sticky;top:106px;z-index:20;margin:0 0 18px;padding:12px;border-radius:var(--radius);background:color-mix(in srgb,var(--surface) 90%, transparent);backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:11px;align-items:center}
+.controls{position:sticky;top:calc(106px + env(safe-area-inset-top,0px));z-index:20;margin:0 0 18px;padding:12px;border-radius:var(--radius);background:color-mix(in srgb,var(--surface) 90%, transparent);backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:11px;align-items:center}
 .search{position:relative;flex:1 1 220px;min-width:180px}
 .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--muted)}
 .search input{width:100%;padding:10px 12px 10px 36px;border-radius:11px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:14px;font-family:inherit}
@@ -924,7 +931,7 @@ button{font-family:inherit;color:inherit}
 .scrim.open{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;right:0;height:100%;width:min(520px,100%);background:var(--surface);z-index:2010;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden}
 .drawer.open{transform:none}
-.drawer-head{position:relative;padding:22px 22px 20px;color:#fff;overflow:hidden;flex:0 0 auto}
+.drawer-head{position:relative;padding:calc(22px + env(safe-area-inset-top,0px)) 22px 20px;color:#fff;overflow:hidden;flex:0 0 auto}
 .drawer-head .dh-bg{position:absolute;inset:0;background:linear-gradient(150deg,var(--brand-strong),var(--brand));z-index:0}
 .drawer-head.s-done .dh-bg{background:linear-gradient(150deg,#b5610f,var(--heat))}
 .drawer-head.s-upcoming .dh-bg{background:linear-gradient(150deg,#42607a,var(--upc))}
@@ -935,9 +942,9 @@ button{font-family:inherit;color:inherit}
 .dh-status .bdot{width:7px;height:7px;border-radius:50%;background:#fff}
 .drawer-head h2{font-size:clamp(1.5rem,4vw,2rem);margin:14px 0 4px;color:#fff;font-weight:800;letter-spacing:-.02em}
 .drawer-head .addr{font-size:13.5px;color:rgba(255,255,255,.92);display:flex;gap:7px;align-items:flex-start}
-.drawer-close{position:absolute;top:16px;right:16px;z-index:3;width:36px;height:36px;border-radius:10px;border:none;background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px);transition:.15s}
+.drawer-close{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:16px;z-index:3;width:36px;height:36px;border-radius:10px;border:none;background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px);transition:.15s}
 .drawer-close:hover{background:rgba(255,255,255,.32);transform:rotate(90deg)}
-.drawer-body{padding:20px 22px 30px;overflow-y:auto;flex:1}
+.drawer-body{padding:20px 22px calc(30px + env(safe-area-inset-bottom,0px));overflow-y:auto;flex:1}
 .d-section{margin-bottom:22px}
 .d-section>h4{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:11px;font-weight:700}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
@@ -966,7 +973,8 @@ button{font-family:inherit;color:inherit}
 
 body.kiosk .tabs{display:none}
 body.kiosk .topbar{position:static}
-body.kiosk .cc-time{font-size:clamp(3.5rem,11vw,6.5rem)}
+body.kiosk .ns-time b{font-size:clamp(2.6rem,8vw,4.2rem)}
+body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -981,6 +989,7 @@ body.kiosk .cc-time{font-size:clamp(3.5rem,11vw,6.5rem)}
     </div>
     <div class="spacer"></div>
     <span class="season-pill"><span class="dot"></span><span id="seasonLbl">Été 2026</span></span>
+    <button class="icon-btn" id="refreshBtn" title="Actualiser les données" aria-label="Actualiser les données"><svg viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v4.5h-4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button class="icon-btn" id="kioskBtn" title="Mode kiosque" aria-label="Mode kiosque"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9V5a1 1 0 011-1h4M20 9V5a1 1 0 00-1-1h-4M4 15v4a1 1 0 001 1h4M20 15v4a1 1 0 01-1 1h-4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button class="icon-btn" id="themeBtn" title="Thème clair / sombre" aria-label="Thème clair ou sombre"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
   </div>
@@ -1000,30 +1009,15 @@ body.kiosk .cc-time{font-size:clamp(3.5rem,11vw,6.5rem)}
   <!-- EN DIRECT -->
   <section class="view active" id="view-live">
     <div id="alertSlot"></div>
-    <div class="live-top">
-      <div class="clockcard">
-        <div class="caustics" aria-hidden="true"></div>
-        <div class="cc-date" id="ccDate">—</div>
-        <div class="cc-time" id="ccTime">--<small>:--</small></div>
-        <div class="cc-openrow">
-          <div class="cc-bignum tnum" id="ccBig">0</div>
-          <div class="lbl">piscines ouvertes<br>en ce moment</div>
-          <div class="cc-mini">
-            <div class="bar" id="ccBar"><i class="o" style="width:0%"></i><i class="c" style="width:100%"></i></div>
-            <div class="mlbl"><span id="ccMiniO">0 ouvertes</span><span id="ccMiniC">0 fermées</span></div>
-          </div>
-        </div>
+    <div class="nowstrip">
+      <div class="ns-time"><b id="ccTime">--:--</b><span id="ccDate">—</span></div>
+      <div class="ns-sep" aria-hidden="true"></div>
+      <div class="ns-open"><b class="tnum" id="ccBig">0</b><span>ouvertes<br>maintenant</span></div>
+      <div class="ns-bar">
+        <div class="bar" id="ccBar"><i class="o" style="width:0%"></i><i class="c" style="width:100%"></i></div>
+        <div class="mlbl"><span id="ccMiniO">0 ouvertes</span><span id="ccMiniC">0 fermées</span></div>
       </div>
-      <div class="live-side">
-        <div class="panel facts">
-          <div class="facts-row">
-            <div class="fact"><span class="f-n" id="factAir">0</span><span class="f-l">bassins<br>plein air</span></div>
-            <div class="fact"><span class="f-n" id="factOly">0</span><span class="f-l">bassins<br>50 m</span></div>
-            <div class="fact"><span class="f-n" id="factTot">0</span><span class="f-l">piscines<br>au total</span></div>
-          </div>
-          <div class="fact-tip" id="factTip">💡</div>
-        </div>
-      </div>
+      <button id="alertChip" class="ns-chip hide" title="Réafficher l'alerte">🌡️ Canicule · 1 €</button>
     </div>
 
     <div class="panel board">
@@ -1039,6 +1033,15 @@ body.kiosk .cc-time{font-size:clamp(3.5rem,11vw,6.5rem)}
       </div>
       <div class="board-axis"><div></div><div class="ax" id="boardAxis"></div></div>
       <div class="board-rows" id="boardRows"></div>
+    </div>
+
+    <div class="panel facts" style="margin-top:16px">
+      <div class="facts-row">
+        <div class="fact"><span class="f-n" id="factAir">0</span><span class="f-l">bassins<br>plein air</span></div>
+        <div class="fact"><span class="f-n" id="factOly">0</span><span class="f-l">bassins<br>50 m</span></div>
+        <div class="fact"><span class="f-n" id="factTot">0</span><span class="f-l">piscines<br>au total</span></div>
+      </div>
+      <div class="fact-tip" id="factTip">💡</div>
     </div>
   </section>
 
@@ -1134,10 +1137,10 @@ body.kiosk .cc-time{font-size:clamp(3.5rem,11vw,6.5rem)}
    3) NEWS[]  4) POOLS[].schedules  →  le reste (live, carte, board) se régénère.
    Horaires en heures décimales (20.5 = 20 h 30). days: "all"|"weekdays"|"weekends"|[0..6].
    ═══════════════════════════════════════════════════════════════════════════ */
-const META = { updated:"2026-07-09", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13" };
+let META = { updated:"2026-07-14", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13" };
 
 /* Alerte en cours (canicule du 6 juillet 2026). overrides = fermeture prolongée par piscine. */
-const ALERT = {
+let ALERT = {
   active:true, type:"canicule", from:"2026-07-06", to:null,
   title:"Canicule — mesures exceptionnelles",
   tarif:"1 € l'entrée dans toutes les piscines municipales",
@@ -1149,7 +1152,7 @@ const ALERT = {
   }
 };
 
-const NEWS = [
+let NEWS = [
   { date:"2026-07-06", type:"canicule", pool:null, title:"Canicule : 1 € l'entrée + horaires étendus",
     body:"Alerte canicule : tarif unique de 1 € dans toutes les piscines municipales et extension à 21 h pour Papus, Yvonne Godard (+ week-end 12 h–21 h), Bellevue nordique, Alex Jany et Toulouse-Lautrec. La Ramée Plage jusqu'à 20 h." },
   { date:"2026-07-04", type:"info", pool:null, title:"Passage aux horaires d'été",
@@ -1166,8 +1169,8 @@ const NEWS = [
     body:"Réouverture après 3 M€ de travaux, rebaptisée en hommage à la championne Yvonne Godard." }
 ];
 
-const POOLS = [
-  { id:"nakache-ete", nom:"Nakache été", quartier:"Île du Ramier", secteur:"Sud", adresse:"9 allée Gabriel Biénès", cp:"31400", coords:[43.5836,1.4335],
+let POOLS = [
+  { id:"nakache-ete", nom:"Nakache été", quartier:"Île du Ramier", secteur:"Sud", adresse:"9 allée Gabriel Biénès", cp:"31400", coords:[43.5858,1.4355],
     saison:"ete", type:"plein-air", olympique:true, aqualudique:false, canicule:false, closedInSummer:false,
     bassins:["Bassin 50 m plein air","Pataugeoire"], features:["Plein air","50 m olympique","Historique (1931)","Sans bonnet"],
     note:"Le grand bassin extérieur mythique de l'île du Ramier. Seule piscine sans bonnet obligatoire, short de bain toléré.",
@@ -1175,7 +1178,7 @@ const POOLS = [
     schedules:[ {from:"2026-06-05",to:"2026-07-03",open:12,close:19,days:"weekdays",note:"après-midi"},
                 {from:"2026-07-04",to:"2026-08-24",open:9.5,close:20.5,days:"all",note:"journée continue"} ] },
 
-  { id:"chapou-ete", nom:"Chapou été", quartier:"Amidonniers", secteur:"Centre", adresse:"Rue Saunière (parc Chapou)", cp:"31000", coords:[43.6144,1.4262],
+  { id:"chapou-ete", nom:"Chapou été", quartier:"Amidonniers", secteur:"Centre", adresse:"Rue Saunière (parc Chapou)", cp:"31000", coords:[43.6088,1.4196],
     saison:"ete", type:"plein-air", olympique:true, aqualudique:false, canicule:false, closedInSummer:false,
     bassins:["Bassin 50 m plein air","Bassin d'apprentissage"], features:["Plein air","50 m olympique","Ouverture 7 h"],
     note:"Piscine d'été au cœur de ville, dans le parc Chapou près des Ponts-Jumeaux. Ouverture matinale en semaine.",
@@ -1184,76 +1187,76 @@ const POOLS = [
                 {from:"2026-07-05",to:"2026-08-30",open:7,close:20,days:"weekdays",note:"en semaine"},
                 {from:"2026-07-05",to:"2026-08-30",open:10,close:20,days:"weekends",note:"week-end"} ] },
 
-  { id:"castex", nom:"Bassin Castex", quartier:"Île du Ramier", secteur:"Sud", adresse:"Allées Gabriel Biénès", cp:"31400", coords:[43.5820,1.4345],
+  { id:"castex", nom:"Bassin Castex", quartier:"Île du Ramier", secteur:"Sud", adresse:"Allées Gabriel Biénès", cp:"31400", coords:[43.5872,1.4362],
     saison:"ete", type:"plein-air", olympique:false, aqualudique:false, canicule:false, closedInSummer:false,
     bassins:["Bassin de plein air chauffé"], features:["Plein air","Chauffé","Tous les jours"],
     note:"Bassin de plein air chauffé, ouvert tous les jours aux mêmes horaires que Nakache été.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-castex",
     schedules:[ {from:"2026-06-05",to:"2026-08-30",open:9.5,close:20.5,days:"all",note:"tous les jours"} ] },
 
-  { id:"alex-jany", nom:"Alex Jany", quartier:"Argoulets", secteur:"Est", adresse:"Avenue de Castres", cp:"31500", coords:[43.6170,1.4760],
+  { id:"alex-jany", nom:"Alex Jany", quartier:"Argoulets", secteur:"Est", adresse:"Avenue de Castres", cp:"31500", coords:[43.6232,1.4730],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin 50 m couvert","Bassin d'apprentissage"], features:["50 m olympique","Bâtiment HQE","Bois & verre","21 h canicule"],
     note:"Architecture bois-verre-métal (HQE) en lisière de la coulée verte des Argoulets, à l'est.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-alex-jany",
     schedules:[ {from:"2026-07-04",to:"2026-08-23",open:10,close:20,days:"all",note:"horaires d'été"} ] },
 
-  { id:"papus", nom:"Papus", quartier:"Bagatelle", secteur:"Ouest", adresse:"64 allée de Guyenne", cp:"31100", coords:[43.5786,1.4090],
+  { id:"papus", nom:"Papus", quartier:"Bagatelle", secteur:"Ouest", adresse:"64 allée de Guyenne", cp:"31100", coords:[43.5745,1.4165],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin sportif de natation"], features:["Couverte","Complexe Papus-Merlettes","21 h canicule"],
     note:"Bassin sportif du complexe Papus-Merlettes (Bagatelle), près de la ligne A du métro.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-papus",
     schedules:[ {from:"2026-06-30",to:"2026-08-30",open:12,close:19,days:"all",note:"horaires d'été"} ] },
 
-  { id:"leo-lagrange", nom:"Léo Lagrange", quartier:"Jean Jaurès", secteur:"Centre", adresse:"Allées Jean Jaurès", cp:"31000", coords:[43.6088,1.4520],
+  { id:"leo-lagrange", nom:"Léo Lagrange", quartier:"Jean Jaurès", secteur:"Centre", adresse:"Allées Jean Jaurès", cp:"31000", coords:[43.6072,1.4542],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:false, closedInSummer:true,
     bassins:["Bassin olympique 50 m · 8 lignes","Bassin d'apprentissage 21 m"], features:["50 m olympique","Fermeture estivale"],
     note:"La piscine olympique du centre ferme au public pour l'été : clubs en juillet, vidange en août, réouverture à la rentrée.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-leo-lagrange", schedules:[] },
 
-  { id:"bellevue", nom:"Bellevue (nordique)", quartier:"Route de Narbonne", secteur:"Sud", adresse:"69 ter route de Narbonne", cp:"31400", coords:[43.5610,1.4640],
+  { id:"bellevue", nom:"Bellevue (nordique)", quartier:"Route de Narbonne", secteur:"Sud", adresse:"69 ter route de Narbonne", cp:"31400", coords:[43.5697,1.4600],
     saison:"annee", type:"nordique", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin nordique extérieur 25 m","Aire de jeux d'eau"], features:["Bassin nordique extérieur","Complexe sportif","21 h canicule"],
     note:"L'été, seul le bassin nordique extérieur (25 m) est ouvert, au sud près du campus. Aire de jeux d'eau pour enfants.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-bellevue",
     schedules:[ {from:"2026-07-05",to:"2026-08-30",open:10,close:20,days:"all",note:"bassin nordique"} ] },
 
-  { id:"alban-minville", nom:"Alban Minville", quartier:"Bellefontaine", secteur:"Ouest", adresse:"1 place Martin Luther King", cp:"31100", coords:[43.5712,1.3918],
+  { id:"alban-minville", nom:"Alban Minville", quartier:"Bellefontaine", secteur:"Ouest", adresse:"1 place Martin Luther King", cp:"31100", coords:[43.5662,1.3908],
     saison:"annee", type:"couverte", olympique:false, aqualudique:true, canicule:false, closedInSummer:false,
     bassins:["Bassin sportif","Espace aqualudique"], features:["Espace aqualudique","Rénovée 2021","Créneau matinal"],
     note:"Rénovée en 2021 avec espace aqualudique (Bellefontaine). Créneau matinal l'été, avant la chaleur.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-alban-minville",
     schedules:[ {from:"2026-06-30",to:"2026-08-30",open:7,close:13.5,days:"all",note:"créneau matinal"} ] },
 
-  { id:"toulouse-lautrec", nom:"Toulouse-Lautrec", quartier:"Minimes", secteur:"Nord", adresse:"26 impasse Barthe", cp:"31200", coords:[43.6295,1.4335],
+  { id:"toulouse-lautrec", nom:"Toulouse-Lautrec", quartier:"Minimes", secteur:"Nord", adresse:"26 impasse Barthe", cp:"31200", coords:[43.6266,1.4380],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Halle Tournesol (dôme ouvrant)","Bassin 50 m Gisèle Vallerey (2026)"], features:["Dôme Tournesol","Nouveau 50 m","21 h canicule"],
     note:"Piscine « Tournesol » à dôme ouvrant, agrandie en 2026 d'un bassin sportif de 50 m « Gisèle Vallerey », au nord.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-toulouse-lautrec",
     schedules:[ {from:"2026-07-04",to:"2026-08-30",open:10,close:20,days:"all",note:"horaires d'été"} ] },
 
-  { id:"la-faourette", nom:"La Faourette", quartier:"La Faourette", secteur:"Ouest", adresse:"Quartier La Faourette", cp:"31100", coords:[43.5820,1.4030],
+  { id:"la-faourette", nom:"La Faourette", quartier:"La Faourette", secteur:"Ouest", adresse:"Quartier La Faourette", cp:"31100", coords:[43.5758,1.4120],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:false, closedInSummer:false,
     bassins:["Bassin type Tournesol"], features:["Type Tournesol","Sud-ouest"],
     note:"Piscine de quartier au sud-ouest, entre Bagatelle et La Faourette. Horaires élargis l'été.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-la-faourette",
     schedules:[ {from:"2026-07-04",to:"2026-08-30",open:10,close:20,days:"all",note:"horaires d'été"} ] },
 
-  { id:"yvonne-godard", nom:"Yvonne Godard", quartier:"Pech David", secteur:"Sud", adresse:"Chemin des côtes de Pech David", cp:"31400", coords:[43.5545,1.4505],
+  { id:"yvonne-godard", nom:"Yvonne Godard", quartier:"Pech David", secteur:"Sud", adresse:"Chemin des côtes de Pech David", cp:"31400", coords:[43.5670,1.4440],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin sportif"], features:["Rénovée 2025","Ex-Pech David","Sur la colline","21 h + week-end canicule"],
     note:"Ex-Pech David, rebaptisée en 2025 après 3 M€ de travaux, sur les hauteurs sud. En canicule : ouverte le week-end 12 h–21 h.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-yvonne-godard",
     schedules:[ {from:"2026-07-04",to:"2026-08-30",open:12,close:19,days:"all",note:"horaires d'été"} ] },
 
-  { id:"jean-boiteux", nom:"Jean Boiteux — Espace Job", quartier:"Sept Deniers", secteur:"Ouest", adresse:"105 route de Blagnac (complexe Job)", cp:"31200", coords:[43.6338,1.4188],
+  { id:"jean-boiteux", nom:"Jean Boiteux — Espace Job", quartier:"Sept Deniers", secteur:"Ouest", adresse:"105 route de Blagnac (complexe Job)", cp:"31200", coords:[43.6218,1.4172],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:false, closedInSummer:true,
     bassins:["Bassin 25 m"], features:["Bassin 25 m","Espace Job","Fermeture estivale"],
     note:"Piscine de 25 m de l'Espace Job (quartier Sept Deniers), au nord-ouest, tournée vers les scolaires et les clubs. Fermée au public durant la saison estivale.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-jean-boiteux-espace-job",
     schedules:[] },
 
-  { id:"la-ramee-plage", nom:"La Ramée Plage", quartier:"Tournefeuille", secteur:"Ouest", adresse:"Chemin de Larramet", cp:"31170", coords:[43.5668,1.3452],
+  { id:"la-ramee-plage", nom:"La Ramée Plage", quartier:"Tournefeuille", secteur:"Ouest", adresse:"Chemin de Larramet", cp:"31170", coords:[43.5715,1.3390],
     saison:"ete", type:"plage", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Baignade surveillée en lac","Plage & espaces verts"], features:["Plan d'eau","Baignade surveillée","Base de loisirs","20 h canicule"],
     note:"Baignade surveillée sur le lac de la base de loisirs de La Ramée (Tournefeuille, ouest de la métropole). 243 ha de nature et de sports.",
@@ -1310,7 +1313,7 @@ const state={ q:"", statut:"all", type:"all", view:"live" };
 function renderLive(){
   const now=new Date();
   $("#ccDate").textContent=cap(now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}));
-  $("#ccTime").innerHTML=`${String(now.getHours()).padStart(2,"0")}<small>:${String(now.getMinutes()).padStart(2,"0")}</small>`;
+  $("#ccTime").textContent=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
   const ls=POOLS.map(p=>liveState(p,now));
   const openNow=ls.filter(l=>l.key==="open").length, total=POOLS.length, pctO=Math.round(openNow/total*100);
   $("#ccBig").textContent=openNow; $("#tabLiveBadge").textContent=openNow;
@@ -1322,12 +1325,20 @@ function renderLive(){
   $("#factTip").textContent=tips[Math.floor(now.getMinutes()/10)%tips.length];
   renderAlert(); renderBoard(now);
 }
+function alertDismissed(){ try{ return localStorage.getItem("spool-alert-dismissed")===ALERT.from; }catch(e){ return false; } }
 function renderAlert(){
-  const slot=$("#alertSlot");
-  if(alertActiveOn(ymd(new Date()))){
+  const slot=$("#alertSlot"), chip=$("#alertChip");
+  const active=alertActiveOn(ymd(new Date()));
+  if(active && !alertDismissed()){
     slot.innerHTML=`<div class="alert" style="margin-bottom:16px"><div class="a-bg"></div><div class="a-ic">🌡️</div>
-      <div><div class="a-t">${ALERT.title}</div><div class="a-b"><b>${ALERT.tarif}.</b> ${ALERT.detail} Plusieurs piscines ouvrent jusqu'à 21 h.</div></div></div>`;
+      <div><div class="a-t">${ALERT.title}</div><div class="a-b"><b>${ALERT.tarif}.</b> ${ALERT.detail}</div></div>
+      <button class="a-close" id="alertClose" aria-label="Masquer l'alerte"><svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>`;
+    $("#alertClose").addEventListener("click",()=>{ try{localStorage.setItem("spool-alert-dismissed",ALERT.from);}catch(e){} renderAlert(); });
   } else slot.innerHTML="";
+  if(chip){
+    chip.classList.toggle("hide", !(active && alertDismissed()));
+    chip.onclick=()=>{ try{localStorage.removeItem("spool-alert-dismissed");}catch(e){} renderAlert(); };
+  }
 }
 function renderBoard(now){
   $("#boardDate").textContent=cap(now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}));
@@ -1356,6 +1367,17 @@ function markerIcon(p,ls){ const air=(p.type==="plein-air"||p.type==="plage"||p.
 function mapsUrl(p){ return `https://www.google.com/maps/dir/?api=1&destination=${p.coords[0]},${p.coords[1]}`; }
 function popupHTML(p,ls){ return `<div class="lpop"><b>${p.nom}</b><div class="lp-st s-${ls.key}">${ls.title}${ls.detail?" · "+ls.detail:""}${ls.st.state==="ouverte"?" ("+ls.st.label+")":""}</div>
   <div class="lpop-actions"><button class="prim" onclick="openDrawer('${p.id}')">Voir la fiche</button><a href="${mapsUrl(p)}" target="_blank" rel="noopener">Itinéraire</a></div></div>`; }
+function addMarkers(){
+  const now=new Date();
+  POOLS.forEach(p=>{ const ls=liveState(p,now); const m=L.marker(p.coords,{icon:markerIcon(p,ls),title:p.nom}).addTo(map);
+    m.bindPopup(popupHTML(p,ls)); mapMarkers[p.id]=m; });
+}
+function rebuildMapMarkers(){
+  if(!map) return;
+  Object.values(mapMarkers).forEach(m=>map.removeLayer(m));
+  mapMarkers={};
+  addMarkers();
+}
 function initMap(){
   if(map){ map.invalidateSize(); updateMapMarkers(); return; }
   map=L.map("leafletMap",{zoomControl:true,scrollWheelZoom:true});
@@ -1363,10 +1385,8 @@ function initMap(){
     {maxZoom:19,subdomains:"abcd",attribution:'&copy; OpenStreetMap, &copy; CARTO'});
   let errs=0; tiles.on("tileerror",()=>{ if(++errs>3) $("#mapFallback").classList.add("show"); });
   tiles.addTo(map);
-  const now=new Date(), pts=[];
-  POOLS.forEach(p=>{ const ls=liveState(p,now); const m=L.marker(p.coords,{icon:markerIcon(p,ls),title:p.nom}).addTo(map);
-    m.bindPopup(popupHTML(p,ls)); mapMarkers[p.id]=m; pts.push(p.coords); });
-  map.fitBounds(pts,{padding:[45,45]});
+  addMarkers();
+  map.fitBounds(POOLS.map(p=>p.coords),{padding:[45,45]});
   setTimeout(()=>map.invalidateSize(),180);
 }
 function updateMapMarkers(){ if(!map)return; const now=new Date(); POOLS.forEach(p=>{ const m=mapMarkers[p.id]; if(!m)return; const ls=liveState(p,now); m.setIcon(markerIcon(p,ls)); m.setPopupContent(popupHTML(p,ls)); }); }
@@ -1451,21 +1471,29 @@ function drawerHTML(p){ const now=new Date(), ls=liveState(p,now), st=ls.st;
     </div></div>`; }
 let lastFocused=null;
 function openDrawer(id){ const p=POOLS.find(x=>x.id===id); if(!p)return; lastFocused=document.activeElement;
-  const d=$("#drawer"); d.innerHTML=drawerHTML(p); d.classList.add("open"); $("#scrim").classList.add("open"); document.body.style.overflow="hidden";
-  $("#drawerClose").addEventListener("click",closeDrawer); d.focus(); }
-function closeDrawer(){ $("#drawer").classList.remove("open"); $("#scrim").classList.remove("open"); document.body.style.overflow=""; if(lastFocused)lastFocused.focus(); }
+  const d=$("#drawer"); const wasOpen=d.classList.contains("open");
+  d.innerHTML=drawerHTML(p); d.classList.add("open"); $("#scrim").classList.add("open"); document.body.style.overflow="hidden";
+  $("#drawerClose").addEventListener("click",()=>closeDrawer()); d.focus();
+  if(!wasOpen){ try{ history.pushState({view:state.view,drawer:id},""); }catch(e){} } }
+function closeDrawer(fromHistory){
+  const d=$("#drawer"); if(!d.classList.contains("open")) return;
+  d.classList.remove("open"); $("#scrim").classList.remove("open"); document.body.style.overflow="";
+  if(lastFocused)lastFocused.focus();
+  // garde l'historique cohérent : fermer via l'UI dépile l'état poussé à l'ouverture
+  if(!fromHistory && history.state && history.state.drawer){ try{ history.back(); }catch(e){} } }
 
 /* ═══════════════════════════════════════════════════════════ NAV / KIOSQUE / THÈME */
-function setView(v){ state.view=v; $$(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.view===v));
+function applyView(v){ state.view=v; $$(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.view===v));
   $$(".view").forEach(s=>s.classList.toggle("active",s.id==="view-"+v));
   if(v==="live")renderLive(); if(v==="carte")initMap(); if(v==="annuaire")renderAnnuaire(); if(v==="infos")renderInfos();
   window.scrollTo({top:0,behavior:"smooth"}); }
+function setView(v){ if(v!==state.view){ try{ history.pushState({view:v},""); }catch(e){} } applyView(v); }
 let kioskTimer=null,kioskProg=null,kioskIdx=0; const KIOSK_VIEWS=["live","carte"],KIOSK_MS=18000;
 function toggleKiosk(){ const on=!document.body.classList.contains("kiosk"); document.body.classList.toggle("kiosk",on);
   if(on){ try{document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();}catch(e){} kioskIdx=Math.max(0,KIOSK_VIEWS.indexOf(state.view)); startKiosk(); } else stopKiosk(); }
 function startKiosk(){ stopKioskT(); let t0=Date.now();
   kioskProg=setInterval(()=>{$("#kioskProgress").style.width=Math.min(100,(Date.now()-t0)/KIOSK_MS*100)+"%";},200);
-  kioskTimer=setInterval(()=>{ kioskIdx=(kioskIdx+1)%KIOSK_VIEWS.length; setView(KIOSK_VIEWS[kioskIdx]); t0=Date.now(); },KIOSK_MS); }
+  kioskTimer=setInterval(()=>{ kioskIdx=(kioskIdx+1)%KIOSK_VIEWS.length; applyView(KIOSK_VIEWS[kioskIdx]); t0=Date.now(); },KIOSK_MS); }
 function stopKioskT(){ if(kioskTimer)clearInterval(kioskTimer); if(kioskProg)clearInterval(kioskProg); kioskTimer=kioskProg=null; $("#kioskProgress").style.width="0"; }
 function stopKiosk(){ stopKioskT(); document.body.classList.remove("kiosk"); if(document.fullscreenElement)document.exitFullscreen&&document.exitFullscreen(); }
 function currentTheme(){ return document.documentElement.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"); }
@@ -1482,11 +1510,46 @@ function bind(){
   document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ if(document.body.classList.contains("kiosk"))stopKiosk(); closeDrawer(); } });
   $("#themeBtn").addEventListener("click",toggleTheme);
   $("#kioskBtn").addEventListener("click",toggleKiosk);
+  $("#refreshBtn").addEventListener("click",()=>loadRemoteData(true));
   document.addEventListener("fullscreenchange",()=>{ if(!document.fullscreenElement&&document.body.classList.contains("kiosk"))stopKiosk(); });
+  // geste/bouton retour : ferme le tiroir, puis remonte les vues, avant de quitter l'app
+  window.addEventListener("popstate",e=>{
+    if($("#drawer").classList.contains("open")){ closeDrawer(true); return; }
+    applyView((e.state&&e.state.view)||"live");
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════ DONNÉES DISTANTES (data.json) */
+function toast(msg){
+  let t=$("#toast");
+  if(!t){ t=document.createElement("div"); t.id="toast"; t.className="toast"; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600);
+}
+async function loadRemoteData(manual){
+  if(location.protocol==="file:"){ if(manual) toast("Fichier local — données embarquées utilisées"); return; }
+  const btn=$("#refreshBtn"); if(btn)btn.classList.add("spinning");
+  try{
+    const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw new Error("http "+r.status);
+    const d=await r.json();
+    if(!d || !Array.isArray(d.POOLS) || d.POOLS.length<5) throw new Error("données invalides");
+    const before=JSON.stringify({META,ALERT,NEWS,POOLS});
+    const after=JSON.stringify({META:d.META||META,ALERT:d.ALERT||ALERT,NEWS:d.NEWS||NEWS,POOLS:d.POOLS});
+    if(after!==before){
+      META=d.META||META; ALERT=d.ALERT||ALERT; NEWS=d.NEWS||NEWS; POOLS=d.POOLS;
+      renderLive(); renderInfos(); if(state.view==="annuaire")renderAnnuaire(); rebuildMapMarkers();
+      toast("✓ Données actualisées — "+frDate(META.updated));
+    } else if(manual) toast("Déjà à jour ("+frDate(META.updated)+")");
+  }catch(e){ if(manual) toast("Actualisation impossible — données embarquées utilisées"); }
+  finally{ if(btn)btn.classList.remove("spinning"); }
 }
 
 renderLive(); renderInfos(); bind();
+try{ history.replaceState({view:"live"},""); }catch(e){}
+loadRemoteData(false);
 setInterval(()=>{ renderLive(); if(state.view==="carte")updateMapMarkers(); if(state.view==="annuaire")renderAnnuaire(); },30000);
+setInterval(()=>loadRemoteData(false), 15*60*1000);
 if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
 </script>
 </body>

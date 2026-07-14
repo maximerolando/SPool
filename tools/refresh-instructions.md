@@ -33,11 +33,22 @@ de Toulouse à jour, en **modifiant uniquement les blocs de données** de `index
 4. **Actus** (`NEWS[]`) — ajoute les nouveautés datées (ouverture/fermeture/travaux).
    Garde ~10 entrées max, les plus récentes en premier.
 5. **Tampon** : mets `META.updated` = date du jour (AAAA-MM-JJ).
-6. **Vérifie** : `node tools/check.mjs` (doit finir par « ✓ Données valides »).
-   Si erreur, corrige avant de committer.
+6. **Exporte + vérifie** :
+   `node tools/export-data.mjs && node tools/check.mjs`
+   (`export-data` régénère `data.json`, que les apps installées rechargent au
+   lancement / toutes les 15 min / via le bouton ↻ ; `check` doit finir par
+   « ✓ Données valides » — corrige toute erreur avant de committer.)
 7. **Commit + push** sur la branche (jamais `main`, pas de PR sauf demande) :
-   `git commit -am "chore(data): actualisation horaires/alerte piscines (AAAA-MM-JJ)"`
+   `git add index.html data.json && git commit -m "chore(data): actualisation horaires/alerte piscines (AAAA-MM-JJ)"`
    puis `git push -u origin claude/toulouse-pools-dashboard-31xhxb`.
+   ⚠ Le push doit se faire **depuis la session principale du dashboard** (la
+   Routine y est rattachée) : les sessions fraîches n'ont pas les droits sur
+   cette branche (erreur 403 sinon).
+8. **Aperçu** (si l'artifact de la session est utilisé) : régénère puis republie —
+   `node tools/build.mjs /dev/null /dev/null /dev/null <scratchpad>/artifact.html`
+   puis l'outil Artifact avec ce même chemin.
+9. **Notification** : envoie une notification push (outil PushNotification) d'une
+   phrase : ce qui a changé, ou « RAS — données déjà à jour ».
 
 ## Règles de prudence
 - **Conservateur** : dans le doute, ne change rien et note l'incertitude dans le message

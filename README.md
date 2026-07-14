@@ -54,12 +54,17 @@ rénovation, incident) s'édite à la main lors d'un passage.
 > `Jean Boiteux — Espace Job` = la piscine du quartier Sept Deniers (même équipement),
 > **fermée au public l'été**. Horaires de La Ramée Plage à confirmer.
 
-### Actualisation automatique (Routine)
+### Actualisation automatique (Routine) & bouton ↻
 
-Une session Claude Code planifiée peut ré-actualiser les données toute seule en suivant
-[`tools/refresh-instructions.md`](tools/refresh-instructions.md) : elle vérifie l'alerte
-en cours, les horaires et les actus (via recherche web), lance `node tools/check.mjs`,
-puis commit/push sur la branche. Garde-fou intégrité : `tools/check.mjs`.
+- **Côté données** : une Routine Claude Code (rattachée à la session principale du
+  projet — les sessions fraîches n'ont pas les droits de push sur la branche) repasse
+  lundi et jeudi, suit [`tools/refresh-instructions.md`](tools/refresh-instructions.md)
+  (vérification par recherche web, `tools/export-data.mjs`, garde-fou `tools/check.mjs`),
+  commit/push, et envoie une notification push de résumé.
+- **Côté app** : les données vivent aussi dans **`data.json`**, rechargé par l'app
+  (installée ou non) au lancement, toutes les 15 min, et via le **bouton ↻** de la
+  barre du haut — les mises à jour atteignent donc les téléphones **sans réinstaller**,
+  dès que l'hébergement (GitHub Pages) sert le nouveau fichier.
 
 ---
 

@@ -9,18 +9,19 @@ const idxPath = root + "index.html";
 
 let html = readFileSync(idxPath, "utf8");
 
-function inject(placeholder, value, label) {
-  if (html.includes(placeholder)) {
-    html = html.split(placeholder).join(value);
-    console.log(`✓ ${label} injecté (${value.length} octets)`);
-  } else {
-    console.log(`• ${label} : placeholder absent (déjà injecté ?)`);
-  }
+function inject(placeholder, path, label) {
+  if (!html.includes(placeholder)) { console.log(`• ${label} : placeholder absent (déjà injecté)`); return; }
+  let value;
+  try { value = readFileSync(path, "utf8"); }
+  catch (e) { console.warn(`⚠ ${label} : fichier source introuvable (${path}) — placeholder laissé tel quel`); return; }
+  if (placeholder === "__FONT_DATA_URI__") value = value.trim();
+  html = html.split(placeholder).join(value);
+  console.log(`✓ ${label} injecté (${value.length} octets)`);
 }
 
-if (b64Path) inject("__FONT_DATA_URI__", readFileSync(b64Path, "utf8").trim(), "Police");
-if (leafletCssPath) inject("__LEAFLET_CSS__", readFileSync(leafletCssPath, "utf8"), "Leaflet CSS");
-if (leafletJsPath) inject("__LEAFLET_JS__", readFileSync(leafletJsPath, "utf8"), "Leaflet JS");
+if (b64Path) inject("__FONT_DATA_URI__", b64Path, "Police");
+if (leafletCssPath) inject("__LEAFLET_CSS__", leafletCssPath, "Leaflet CSS");
+if (leafletJsPath) inject("__LEAFLET_JS__", leafletJsPath, "Leaflet JS");
 
 writeFileSync(idxPath, html);
 
