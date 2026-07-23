@@ -1,6 +1,6 @@
 {
  "META": {
-  "updated": "2026-07-14",
+  "updated": "2026-07-23",
   "season": "Été 2026",
   "seasonFrom": "2026-06-05",
   "seasonTo": "2026-09-13"
@@ -12,7 +12,7 @@
   "to": null,
   "title": "Canicule — mesures exceptionnelles",
   "tarif": "1 € l'entrée dans toutes les piscines municipales",
-  "detail": "Depuis le 6 juillet, en alerte canicule : tarif unique 1 € et horaires étendus.",
+  "detail": "Depuis le 6 juillet : tarif unique 1 € et horaires étendus. Toujours en vigueur au 23 juillet (aucune levée annoncée).",
   "overrides": {
    "papus": {
     "close": 21
@@ -39,6 +39,13 @@
   }
  },
  "NEWS": [
+  {
+   "date": "2026-07-23",
+   "type": "info",
+   "pool": null,
+   "title": "Vigilance redescendue, mesures 1 € maintenues",
+   "body": "La Haute-Garonne est repassée en vigilance jaune après le pic de la mi-juillet, mais aucune levée officielle des mesures municipales (1 € l'entrée, extensions à 21 h) n'a été annoncée : elles restent affichées ici. À confirmer sur place."
+  },
   {
    "date": "2026-07-06",
    "type": "canicule",
@@ -146,8 +153,8 @@
    "adresse": "Rue Saunière (parc Chapou)",
    "cp": "31000",
    "coords": [
-    43.6088,
-    1.4196
+    43.6076,
+    1.427
    ],
    "saison": "ete",
    "type": "plein-air",
@@ -201,8 +208,8 @@
    "adresse": "Allées Gabriel Biénès",
    "cp": "31400",
    "coords": [
-    43.5872,
-    1.4362
+    43.5861,
+    1.4343
    ],
    "saison": "ete",
    "type": "plein-air",
@@ -239,8 +246,8 @@
    "adresse": "Avenue de Castres",
    "cp": "31500",
    "coords": [
-    43.6232,
-    1.473
+    43.6228,
+    1.4722
    ],
    "saison": "annee",
    "type": "couverte",
@@ -280,7 +287,7 @@
    "cp": "31100",
    "coords": [
     43.5745,
-    1.4165
+    1.418
    ],
    "saison": "annee",
    "type": "couverte",
@@ -314,7 +321,7 @@
    "nom": "Léo Lagrange",
    "quartier": "Jean Jaurès",
    "secteur": "Centre",
-   "adresse": "Allées Jean Jaurès",
+   "adresse": "4 place Pierre-Paul Riquet",
    "cp": "31000",
    "coords": [
     43.6072,
@@ -346,8 +353,8 @@
    "adresse": "69 ter route de Narbonne",
    "cp": "31400",
    "coords": [
-    43.5697,
-    1.46
+    43.567,
+    1.4525
    ],
    "saison": "annee",
    "type": "nordique",
@@ -385,8 +392,8 @@
    "adresse": "1 place Martin Luther King",
    "cp": "31100",
    "coords": [
-    43.5662,
-    1.3908
+    43.5659,
+    1.3922
    ],
    "saison": "annee",
    "type": "couverte",
@@ -424,8 +431,8 @@
    "adresse": "26 impasse Barthe",
    "cp": "31200",
    "coords": [
-    43.6266,
-    1.438
+    43.6272,
+    1.4403
    ],
    "saison": "annee",
    "type": "couverte",
@@ -500,8 +507,8 @@
    "adresse": "Chemin des côtes de Pech David",
    "cp": "31400",
    "coords": [
-    43.567,
-    1.444
+    43.5653,
+    1.4453
    ],
    "saison": "annee",
    "type": "couverte",
@@ -539,8 +546,8 @@
    "adresse": "105 route de Blagnac (complexe Job)",
    "cp": "31200",
    "coords": [
-    43.6218,
-    1.4172
+    43.6164,
+    1.4078
    ],
    "saison": "annee",
    "type": "couverte",
@@ -568,8 +575,8 @@
    "adresse": "Chemin de Larramet",
    "cp": "31170",
    "coords": [
-    43.5715,
-    1.339
+    43.5678,
+    1.3438
    ],
    "saison": "ete",
    "type": "plage",
@@ -592,7 +599,7 @@
    "schedules": [
     {
      "from": "2026-07-04",
-     "to": "2026-08-28",
+     "to": "2026-08-23",
      "open": 10,
      "close": 19,
      "days": "all",

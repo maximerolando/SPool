@@ -50,6 +50,16 @@ de Toulouse à jour, en **modifiant uniquement les blocs de données** de `index
 9. **Notification** : envoie une notification push (outil PushNotification) d'une
    phrase : ce qui a changé, ou « RAS — données déjà à jour ».
 
+## Coordonnées GPS (qualité)
+
+Vérifiées type RES (±20 m, ne pas toucher sauf source meilleure) : nakache-ete,
+castex, toulouse-lautrec, yvonne-godard, jean-boiteux, la-ramee-plage, bellevue.
+Approximatives (±100-250 m, à affiner si une source numérique fiable apparaît —
+cartes-2-france/webvilles/gralon publient les décimales du recensement des
+équipements sportifs) : chapou-ete, alex-jany, papus, la-faourette,
+alban-minville, leo-lagrange. L'utilisateur peut aussi fournir des corrections
+via Maj+clic sur la carte de l'app.
+
 ## Règles de prudence
 - **Conservateur** : dans le doute, ne change rien et note l'incertitude dans le message
   de commit. Mieux vaut une donnée « à confirmer » qu'une fausse certitude.

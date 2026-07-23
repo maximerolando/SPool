@@ -1048,7 +1048,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
   <!-- CARTE -->
   <section class="view" id="view-carte">
     <div class="map-card">
-      <div class="map-head"><h2>Carte des piscines</h2><span class="hint">Cliquez un point → fiche & itinéraire</span></div>
+      <div class="map-head"><h2>Carte des piscines</h2><span class="hint">Clic : fiche & itinéraire · Maj+clic : coordonnées</span></div>
       <div id="leafletMap"></div>
       <div class="map-fallback" id="mapFallback">🗺️ Le fond de carte ne se charge pas dans cet aperçu (réseau restreint). Il s'affiche normalement dans l'app hébergée ou en local. Les points restent cliquables.</div>
       <div class="map-legend">
@@ -1137,14 +1137,14 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
    3) NEWS[]  4) POOLS[].schedules  →  le reste (live, carte, board) se régénère.
    Horaires en heures décimales (20.5 = 20 h 30). days: "all"|"weekdays"|"weekends"|[0..6].
    ═══════════════════════════════════════════════════════════════════════════ */
-let META = { updated:"2026-07-14", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13" };
+let META = { updated:"2026-07-23", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13" };
 
 /* Alerte en cours (canicule du 6 juillet 2026). overrides = fermeture prolongée par piscine. */
 let ALERT = {
   active:true, type:"canicule", from:"2026-07-06", to:null,
   title:"Canicule — mesures exceptionnelles",
   tarif:"1 € l'entrée dans toutes les piscines municipales",
-  detail:"Depuis le 6 juillet, en alerte canicule : tarif unique 1 € et horaires étendus.",
+  detail:"Depuis le 6 juillet : tarif unique 1 € et horaires étendus. Toujours en vigueur au 23 juillet (aucune levée annoncée).",
   overrides:{
     "papus":{close:21}, "yvonne-godard":{close:21, weekend:{open:12,close:21}},
     "bellevue":{close:21}, "alex-jany":{close:21}, "toulouse-lautrec":{close:21},
@@ -1153,6 +1153,8 @@ let ALERT = {
 };
 
 let NEWS = [
+  { date:"2026-07-23", type:"info", pool:null, title:"Vigilance redescendue, mesures 1 € maintenues",
+    body:"La Haute-Garonne est repassée en vigilance jaune après le pic de la mi-juillet, mais aucune levée officielle des mesures municipales (1 € l'entrée, extensions à 21 h) n'a été annoncée : elles restent affichées ici. À confirmer sur place." },
   { date:"2026-07-06", type:"canicule", pool:null, title:"Canicule : 1 € l'entrée + horaires étendus",
     body:"Alerte canicule : tarif unique de 1 € dans toutes les piscines municipales et extension à 21 h pour Papus, Yvonne Godard (+ week-end 12 h–21 h), Bellevue nordique, Alex Jany et Toulouse-Lautrec. La Ramée Plage jusqu'à 20 h." },
   { date:"2026-07-04", type:"info", pool:null, title:"Passage aux horaires d'été",
@@ -1178,7 +1180,7 @@ let POOLS = [
     schedules:[ {from:"2026-06-05",to:"2026-07-03",open:12,close:19,days:"weekdays",note:"après-midi"},
                 {from:"2026-07-04",to:"2026-08-24",open:9.5,close:20.5,days:"all",note:"journée continue"} ] },
 
-  { id:"chapou-ete", nom:"Chapou été", quartier:"Amidonniers", secteur:"Centre", adresse:"Rue Saunière (parc Chapou)", cp:"31000", coords:[43.6088,1.4196],
+  { id:"chapou-ete", nom:"Chapou été", quartier:"Amidonniers", secteur:"Centre", adresse:"Rue Saunière (parc Chapou)", cp:"31000", coords:[43.6076,1.4270],
     saison:"ete", type:"plein-air", olympique:true, aqualudique:false, canicule:false, closedInSummer:false,
     bassins:["Bassin 50 m plein air","Bassin d'apprentissage"], features:["Plein air","50 m olympique","Ouverture 7 h"],
     note:"Piscine d'été au cœur de ville, dans le parc Chapou près des Ponts-Jumeaux. Ouverture matinale en semaine.",
@@ -1187,48 +1189,48 @@ let POOLS = [
                 {from:"2026-07-05",to:"2026-08-30",open:7,close:20,days:"weekdays",note:"en semaine"},
                 {from:"2026-07-05",to:"2026-08-30",open:10,close:20,days:"weekends",note:"week-end"} ] },
 
-  { id:"castex", nom:"Bassin Castex", quartier:"Île du Ramier", secteur:"Sud", adresse:"Allées Gabriel Biénès", cp:"31400", coords:[43.5872,1.4362],
+  { id:"castex", nom:"Bassin Castex", quartier:"Île du Ramier", secteur:"Sud", adresse:"Allées Gabriel Biénès", cp:"31400", coords:[43.5861,1.4343],
     saison:"ete", type:"plein-air", olympique:false, aqualudique:false, canicule:false, closedInSummer:false,
     bassins:["Bassin de plein air chauffé"], features:["Plein air","Chauffé","Tous les jours"],
     note:"Bassin de plein air chauffé, ouvert tous les jours aux mêmes horaires que Nakache été.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-castex",
     schedules:[ {from:"2026-06-05",to:"2026-08-30",open:9.5,close:20.5,days:"all",note:"tous les jours"} ] },
 
-  { id:"alex-jany", nom:"Alex Jany", quartier:"Argoulets", secteur:"Est", adresse:"Avenue de Castres", cp:"31500", coords:[43.6232,1.4730],
+  { id:"alex-jany", nom:"Alex Jany", quartier:"Argoulets", secteur:"Est", adresse:"Avenue de Castres", cp:"31500", coords:[43.6228,1.4722],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin 50 m couvert","Bassin d'apprentissage"], features:["50 m olympique","Bâtiment HQE","Bois & verre","21 h canicule"],
     note:"Architecture bois-verre-métal (HQE) en lisière de la coulée verte des Argoulets, à l'est.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-alex-jany",
     schedules:[ {from:"2026-07-04",to:"2026-08-23",open:10,close:20,days:"all",note:"horaires d'été"} ] },
 
-  { id:"papus", nom:"Papus", quartier:"Bagatelle", secteur:"Ouest", adresse:"64 allée de Guyenne", cp:"31100", coords:[43.5745,1.4165],
+  { id:"papus", nom:"Papus", quartier:"Bagatelle", secteur:"Ouest", adresse:"64 allée de Guyenne", cp:"31100", coords:[43.5745,1.4180],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin sportif de natation"], features:["Couverte","Complexe Papus-Merlettes","21 h canicule"],
     note:"Bassin sportif du complexe Papus-Merlettes (Bagatelle), près de la ligne A du métro.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-papus",
     schedules:[ {from:"2026-06-30",to:"2026-08-30",open:12,close:19,days:"all",note:"horaires d'été"} ] },
 
-  { id:"leo-lagrange", nom:"Léo Lagrange", quartier:"Jean Jaurès", secteur:"Centre", adresse:"Allées Jean Jaurès", cp:"31000", coords:[43.6072,1.4542],
+  { id:"leo-lagrange", nom:"Léo Lagrange", quartier:"Jean Jaurès", secteur:"Centre", adresse:"4 place Pierre-Paul Riquet", cp:"31000", coords:[43.6072,1.4542],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:false, closedInSummer:true,
     bassins:["Bassin olympique 50 m · 8 lignes","Bassin d'apprentissage 21 m"], features:["50 m olympique","Fermeture estivale"],
     note:"La piscine olympique du centre ferme au public pour l'été : clubs en juillet, vidange en août, réouverture à la rentrée.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-leo-lagrange", schedules:[] },
 
-  { id:"bellevue", nom:"Bellevue (nordique)", quartier:"Route de Narbonne", secteur:"Sud", adresse:"69 ter route de Narbonne", cp:"31400", coords:[43.5697,1.4600],
+  { id:"bellevue", nom:"Bellevue (nordique)", quartier:"Route de Narbonne", secteur:"Sud", adresse:"69 ter route de Narbonne", cp:"31400", coords:[43.5670,1.4525],
     saison:"annee", type:"nordique", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin nordique extérieur 25 m","Aire de jeux d'eau"], features:["Bassin nordique extérieur","Complexe sportif","21 h canicule"],
     note:"L'été, seul le bassin nordique extérieur (25 m) est ouvert, au sud près du campus. Aire de jeux d'eau pour enfants.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-bellevue",
     schedules:[ {from:"2026-07-05",to:"2026-08-30",open:10,close:20,days:"all",note:"bassin nordique"} ] },
 
-  { id:"alban-minville", nom:"Alban Minville", quartier:"Bellefontaine", secteur:"Ouest", adresse:"1 place Martin Luther King", cp:"31100", coords:[43.5662,1.3908],
+  { id:"alban-minville", nom:"Alban Minville", quartier:"Bellefontaine", secteur:"Ouest", adresse:"1 place Martin Luther King", cp:"31100", coords:[43.5659,1.3922],
     saison:"annee", type:"couverte", olympique:false, aqualudique:true, canicule:false, closedInSummer:false,
     bassins:["Bassin sportif","Espace aqualudique"], features:["Espace aqualudique","Rénovée 2021","Créneau matinal"],
     note:"Rénovée en 2021 avec espace aqualudique (Bellefontaine). Créneau matinal l'été, avant la chaleur.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-alban-minville",
     schedules:[ {from:"2026-06-30",to:"2026-08-30",open:7,close:13.5,days:"all",note:"créneau matinal"} ] },
 
-  { id:"toulouse-lautrec", nom:"Toulouse-Lautrec", quartier:"Minimes", secteur:"Nord", adresse:"26 impasse Barthe", cp:"31200", coords:[43.6266,1.4380],
+  { id:"toulouse-lautrec", nom:"Toulouse-Lautrec", quartier:"Minimes", secteur:"Nord", adresse:"26 impasse Barthe", cp:"31200", coords:[43.6272,1.4403],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Halle Tournesol (dôme ouvrant)","Bassin 50 m Gisèle Vallerey (2026)"], features:["Dôme Tournesol","Nouveau 50 m","21 h canicule"],
     note:"Piscine « Tournesol » à dôme ouvrant, agrandie en 2026 d'un bassin sportif de 50 m « Gisèle Vallerey », au nord.",
@@ -1242,26 +1244,26 @@ let POOLS = [
     lien:"https://metropole.toulouse.fr/annuaire/piscine-la-faourette",
     schedules:[ {from:"2026-07-04",to:"2026-08-30",open:10,close:20,days:"all",note:"horaires d'été"} ] },
 
-  { id:"yvonne-godard", nom:"Yvonne Godard", quartier:"Pech David", secteur:"Sud", adresse:"Chemin des côtes de Pech David", cp:"31400", coords:[43.5670,1.4440],
+  { id:"yvonne-godard", nom:"Yvonne Godard", quartier:"Pech David", secteur:"Sud", adresse:"Chemin des côtes de Pech David", cp:"31400", coords:[43.5653,1.4453],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Bassin sportif"], features:["Rénovée 2025","Ex-Pech David","Sur la colline","21 h + week-end canicule"],
     note:"Ex-Pech David, rebaptisée en 2025 après 3 M€ de travaux, sur les hauteurs sud. En canicule : ouverte le week-end 12 h–21 h.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-yvonne-godard",
     schedules:[ {from:"2026-07-04",to:"2026-08-30",open:12,close:19,days:"all",note:"horaires d'été"} ] },
 
-  { id:"jean-boiteux", nom:"Jean Boiteux — Espace Job", quartier:"Sept Deniers", secteur:"Ouest", adresse:"105 route de Blagnac (complexe Job)", cp:"31200", coords:[43.6218,1.4172],
+  { id:"jean-boiteux", nom:"Jean Boiteux — Espace Job", quartier:"Sept Deniers", secteur:"Ouest", adresse:"105 route de Blagnac (complexe Job)", cp:"31200", coords:[43.6164,1.4078],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:false, closedInSummer:true,
     bassins:["Bassin 25 m"], features:["Bassin 25 m","Espace Job","Fermeture estivale"],
     note:"Piscine de 25 m de l'Espace Job (quartier Sept Deniers), au nord-ouest, tournée vers les scolaires et les clubs. Fermée au public durant la saison estivale.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-jean-boiteux-espace-job",
     schedules:[] },
 
-  { id:"la-ramee-plage", nom:"La Ramée Plage", quartier:"Tournefeuille", secteur:"Ouest", adresse:"Chemin de Larramet", cp:"31170", coords:[43.5715,1.3390],
+  { id:"la-ramee-plage", nom:"La Ramée Plage", quartier:"Tournefeuille", secteur:"Ouest", adresse:"Chemin de Larramet", cp:"31170", coords:[43.5678,1.3438],
     saison:"ete", type:"plage", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
     bassins:["Baignade surveillée en lac","Plage & espaces verts"], features:["Plan d'eau","Baignade surveillée","Base de loisirs","20 h canicule"],
     note:"Baignade surveillée sur le lac de la base de loisirs de La Ramée (Tournefeuille, ouest de la métropole). 243 ha de nature et de sports.",
     lien:"https://metropole.toulouse.fr/annuaire/la-ramee",
-    schedules:[ {from:"2026-07-04",to:"2026-08-28",open:10,close:19,days:"all",note:"baignade surveillée"} ] }
+    schedules:[ {from:"2026-07-04",to:"2026-08-23",open:10,close:19,days:"all",note:"baignade surveillée"} ] }
 ];
 
 /* ═══════════════════════════════════════════════════════════ MOTEUR */
@@ -1386,6 +1388,9 @@ function initMap(){
   let errs=0; tiles.on("tileerror",()=>{ if(++errs>3) $("#mapFallback").classList.add("show"); });
   tiles.addTo(map);
   addMarkers();
+  // aide au recalage : Maj+clic affiche les coordonnées du point cliqué (à reporter dans POOLS[].coords)
+  map.on("click",e=>{ if(!e.originalEvent||!e.originalEvent.shiftKey) return;
+    L.popup().setLatLng(e.latlng).setContent(`<div class="lpop"><b>Coordonnées</b><span class="tnum">${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}</span></div>`).openOn(map); });
   map.fitBounds(POOLS.map(p=>p.coords),{padding:[45,45]});
   setTimeout(()=>map.invalidateSize(),180);
 }
