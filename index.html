@@ -958,6 +958,12 @@ button{font-family:inherit;color:inherit}
 .callout.heat{background:var(--heat-wash);color:var(--heat-ink);border:1px solid color-mix(in srgb,var(--heat) 25%,transparent)}
 .callout.info{background:var(--brand-wash);color:var(--brand-ink)}
 .callout svg{flex:0 0 auto;width:18px;height:18px;margin-top:1px}
+/* « horaires non connus » : neutre, jamais la couleur « fermée » */
+.sw.s-unknown,.lmark.s-unknown{background:var(--muted)}.bstate.s-unknown,.lpop .lp-st.s-unknown{color:var(--ink-2)}
+.bfill.s-unknown,.track.empty.unknown .fill{left:2%;width:96%;background:repeating-linear-gradient(45deg,var(--line),var(--line) 5px,transparent 5px,transparent 10px)}
+.pcard.s-unknown .status-rail{background:var(--muted)}.status-badge.s-unknown{background:var(--line-soft);color:var(--ink-2)}
+.drawer-head.s-unknown .dh-bg{background:linear-gradient(150deg,#3c5563,var(--muted))}
+.callout.unknown{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}.callout a{color:inherit;font-weight:700}
 .d-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:11px;font-size:13.5px;font-weight:650;text-decoration:none;cursor:pointer;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);transition:.15s}
 .btn:hover{border-color:var(--brand);transform:translateY(-1px)}
@@ -1029,6 +1035,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
           <span class="lg"><span class="sw s-done"></span>Déjà fermée</span>
           <span class="lg"><span class="sw s-upcoming"></span>À venir</span>
           <span class="lg"><span class="sw s-closed"></span>Fermée saison</span>
+          <span class="lg"><span class="sw s-unknown"></span>Horaires non connus</span>
         </div>
       </div>
       <div class="board-axis"><div></div><div class="ax" id="boardAxis"></div></div>
@@ -1057,6 +1064,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
         <span class="lg"><span class="sw" style="background:var(--heat)"></span>Déjà fermée aujourd'hui</span>
         <span class="lg"><span class="sw" style="background:var(--upc)"></span>À venir</span>
         <span class="lg"><span class="sw" style="background:var(--closed)"></span>Fermée la saison</span>
+        <span class="lg"><span class="sw" style="background:var(--muted)"></span>Horaires non connus</span>
         <span class="lg" style="margin-left:auto">☀️ Plein air / plan d'eau</span>
       </div>
     </div>
@@ -1071,7 +1079,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
         <span class="glabel">Statut</span>
         <button class="chip" data-f="all" aria-pressed="true">Toutes</button>
         <button class="chip c-open" data-f="ouverte" aria-pressed="false"><span class="cdot"></span>Ouvertes auj.</button>
-        <button class="chip c-closed" data-f="fermee" aria-pressed="false"><span class="cdot"></span>Fermées l'été</button>
+        <button class="chip c-closed" data-f="fermee" aria-pressed="false"><span class="cdot"></span>Fermées auj.</button>
       </div>
       <div class="filtergroup" id="fType" role="group" aria-label="Type">
         <span class="glabel">Type</span>
@@ -1282,8 +1290,13 @@ function frDate(ds){ const [y,m,d]=ds.split("-").map(Number); return `${d} ${MON
 function humanDuration(min){ if(min==null)return""; if(min<1)return"moins d'1 min"; const h=Math.floor(min/60),m=min%60; return h>0?(m>0?`${h} h ${String(m).padStart(2,"0")}`:`${h} h`):`${m} min`; }
 function dayMatch(days,wd){ if(days==="all"||!days)return true; if(days==="weekdays")return wd>=1&&wd<=5; if(days==="weekends")return wd===0||wd===6; if(Array.isArray(days))return days.includes(wd); return true; }
 function baseSchedule(p,date){ const ds=ymd(date),wd=date.getDay(); for(const s of p.schedules){ if(ds>=s.from&&ds<=s.to&&dayMatch(s.days,wd))return s; } return null; }
+/* Règle 1 : « Fermée » seulement si c'est connu (une période couvre ce jour, ou closedInSummer en saison).
+   Sinon, ou si les données n'ont pas été revérifiées depuis STALE_DAYS jours : « horaires non connus ». */
+const STALE_DAYS=10, OFFICIAL_URL="https://metropole.toulouse.fr/sortir/sport/les-piscines-toulousaines";
+function dataAge(date){ return Math.round((new Date(date.getFullYear(),date.getMonth(),date.getDate())-new Date(META.updated+"T00:00:00"))/864e5); }
 function alertActiveOn(ds){ return ALERT.active && ds>=ALERT.from && (ALERT.to==null||ds<=ALERT.to); }
 function statusOn(p,date){
+  if(dataAge(date)>STALE_DAYS) return {state:"inconnu",stale:true,label:"Horaires non connus"};
   const s=baseSchedule(p,date);
   if(s){
     let open=s.open,close=s.close,canic=false; const ds=ymd(date),ov=ALERT.overrides[p.id];
@@ -1293,14 +1306,16 @@ function statusOn(p,date){
     return {state:"ouverte",open,close,label:`${fmtH(open)} – ${fmtH(close)}`,canicule:canic,base:s};
   }
   const ds=ymd(date), inSeason=ds>=META.seasonFrom&&ds<=META.seasonTo;
-  if(inSeason) return {state:"fermee",label:p.closedInSummer?"Fermée l'été":"Fermée ce jour"};
-  return {state:"annee",label:"Horaires de l'année"};
+  if(p.schedules.some(x=>ds>=x.from&&ds<=x.to)) return {state:"fermee",label:"Fermée ce jour"};
+  if(inSeason&&p.closedInSummer) return {state:"fermee",label:"Fermée l'été"};
+  return {state:"inconnu",label:"Horaires non connus"};
 }
 function nextOpenDate(p,now){ for(let i=1;i<=170;i++){ const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i); if(baseSchedule(p,d))return d; } return null; }
 function relDay(d,now){ const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()); const diff=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-t0)/864e5);
   if(diff<=0)return"aujourd'hui"; if(diff===1)return"demain"; if(diff<7)return DOW[d.getDay()]; return `le ${d.getDate()} ${MONTHS[d.getMonth()]}`; }
 function liveState(p,now){
   const st=statusOn(p,now);
+  if(st.state==="inconnu") return {key:"unknown",st,mins:4e6,title:"Horaires non connus",detail:st.stale?"données à revérifier":""};
   if(st.state==="ouverte"){ const h=hd(now);
     if(h<st.open){ const m=Math.round((st.open-h)*60); return {key:"soon",st,mins:m,title:`Ouvre à ${fmtH(st.open)}`,detail:`dans ${humanDuration(m)}`}; }
     if(h>st.close){ return {key:"done",st,mins:1e6,title:"Fermée pour aujourd'hui",detail:`ouvrait jusqu'à ${fmtH(st.close)}`}; }
@@ -1309,7 +1324,7 @@ function liveState(p,now){
   if(nx) return {key:"upcoming",st,mins:2e6,title:`Ouvre ${relDay(nx,now)}`,detail:"",date:nx};
   return {key:"closed",st,mins:3e6,title:p.closedInSummer?"Fermée l'été":"Fermée",detail:p.closedInSummer?"réouverture à la rentrée":""};
 }
-const stateLabels={open:"Ouverte",soon:"Ouvre + tard",done:"Déjà fermée",upcoming:"À venir",closed:"Fermée saison"};
+const stateLabels={open:"Ouverte",soon:"Ouvre + tard",done:"Déjà fermée",upcoming:"À venir",closed:"Fermée saison",unknown:"Horaires non connus"};
 
 const BSCALE={start:6,end:23}, TICKS=[6,9,12,15,18,21];
 const bpct=h=>Math.max(0,Math.min(100,(h-BSCALE.start)/(BSCALE.end-BSCALE.start)*100));
@@ -1322,9 +1337,10 @@ function renderLive(){
   $("#ccTime").textContent=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
   const ls=POOLS.map(p=>liveState(p,now));
   const openNow=ls.filter(l=>l.key==="open").length, total=POOLS.length, pctO=Math.round(openNow/total*100);
-  $("#ccBig").textContent=openNow; $("#tabLiveBadge").textContent=openNow;
+  const unkNow=ls.filter(l=>l.key==="unknown").length, big=(openNow===0&&unkNow)?"?":openNow; // « 0 ouverte » serait une affirmation fausse
+  $("#ccBig").textContent=big; $("#tabLiveBadge").textContent=big;
   $("#ccBar").innerHTML=`<i class="o" style="width:${pctO}%"></i><i class="c" style="width:${100-pctO}%"></i>`;
-  $("#ccMiniO").textContent=`${openNow} ouvertes`; $("#ccMiniC").textContent=`${total-openNow} autres`;
+  $("#ccMiniO").textContent=`${openNow} ouvertes`; $("#ccMiniC").textContent=unkNow?`${unkNow} non connue${unkNow>1?"s":""}`+(total-openNow-unkNow?` · ${total-openNow-unkNow} autres`:""):`${total-openNow} autres`;
   $("#factAir").textContent=POOLS.filter(p=>p.type==="plein-air"||p.type==="plage"||p.type==="nordique").length;
   $("#factOly").textContent=POOLS.filter(p=>p.olympique).length; $("#factTot").textContent=total;
   const tips=["💡 Bonnet obligatoire partout, sauf à Nakache été.","🩳 Short de bain interdit : slip ou boxer requis (sauf Nakache été).","🌡️ Canicule : 1 € l'entrée et horaires prolongés à 21 h.","🏊 Toulouse compte 3 grands bassins de 50 m ouverts l'été.","☀️ Nakache, Chapou, Castex et La Ramée sont en plein air.","📞 Infos & tarifs : Allô Toulouse 31 01."];
@@ -1335,12 +1351,14 @@ function alertDismissed(){ try{ return localStorage.getItem("spool-alert-dismiss
 function renderAlert(){
   const slot=$("#alertSlot"), chip=$("#alertChip");
   const active=alertActiveOn(ymd(new Date()));
+  const now=new Date(), unk=POOLS.filter(p=>statusOn(p,now).state==="inconnu"), stale=dataAge(now)>STALE_DAYS;
+  const unkNote=unk.length?`<div class="callout unknown" style="margin-bottom:16px"><span><b>${stale?"Données pas revérifiées depuis le "+frDate(META.updated):unk.length+" piscine"+(unk.length>1?"s":"")+" sans horaire connu aujourd'hui"}.</b> Rien n'est affiché comme « fermé » sans source : consultez <a href="${OFFICIAL_URL}" target="_blank" rel="noopener">les horaires officiels de la Mairie</a> avant d'y aller.</span></div>`:"";
   if(active && !alertDismissed()){
-    slot.innerHTML=`<div class="alert" style="margin-bottom:16px"><div class="a-bg"></div><div class="a-ic">🌡️</div>
+    slot.innerHTML=unkNote+`<div class="alert" style="margin-bottom:16px"><div class="a-bg"></div><div class="a-ic">🌡️</div>
       <div><div class="a-t">${ALERT.title}</div><div class="a-b"><b>${ALERT.tarif}.</b> ${ALERT.detail}</div></div>
       <button class="a-close" id="alertClose" aria-label="Masquer l'alerte"><svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>`;
     $("#alertClose").addEventListener("click",()=>{ try{localStorage.setItem("spool-alert-dismissed",ALERT.from);}catch(e){} renderAlert(); });
-  } else slot.innerHTML="";
+  } else slot.innerHTML=unkNote;
   if(chip){
     chip.classList.toggle("hide", !(active && alertDismissed()));
     chip.onclick=()=>{ try{localStorage.removeItem("spool-alert-dismissed");}catch(e){} renderAlert(); };
@@ -1350,7 +1368,7 @@ function renderBoard(now){
   $("#boardDate").textContent=cap(now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}));
   $("#boardAxis").innerHTML=TICKS.map(t=>`<span style="left:${bpct(t)}%">${t} h</span>`).join("");
   const rows=POOLS.map(p=>({p,ls:liveState(p,now)}));
-  const order={open:0,soon:1,done:2,upcoming:3,closed:4};
+  const order={open:0,soon:1,done:2,upcoming:3,closed:4,unknown:5};
   rows.sort((a,b)=>(order[a.ls.key]-order[b.ls.key])||(a.ls.mins-b.ls.mins)||a.p.nom.localeCompare(b.p.nom));
   const html=rows.map(({p,ls})=>{
     const st=ls.st; let fill;
@@ -1411,7 +1429,7 @@ function tagHTML(p){ const t=[];
   if(p.saison==="ete") t.push(`<span class="tag">Été uniquement</span>`);
   t.push(`<span class="tag">${p.secteur}</span>`); return t.join(""); }
 function trackHTML(p,big){ const st=statusOn(p,new Date());
-  if(st.state!=="ouverte") return `<div class="track empty ${big?'big-track':''}"><div class="fill"></div></div>`;
+  if(st.state!=="ouverte") return `<div class="track empty ${st.state==="inconnu"?"unknown":""} ${big?'big-track':''}"><div class="fill"></div></div>`;
   const l=bpct(st.open),r=bpct(st.close),now=new Date(),h=hd(now),showNow=h>=BSCALE.start&&h<=BSCALE.end;
   const ls=liveState(p,now), cls=ls.key==="done"?"s-done":"s-open";
   return `<div class="track ${big?'big-track':''}"><div class="fill ${cls}" style="left:${l}%;width:${Math.max(1,r-l)}%"></div>${showNow?`<div class="nowmark" style="left:${bpct(h)}%"></div>`:""}</div>`; }
@@ -1422,12 +1440,12 @@ function cardHTML(p){ const now=new Date(), ls=liveState(p,now), st=ls.st;
     <div class="row1"><div style="min-width:0"><h3>${p.nom}</h3><div class="quartier">📍 ${p.quartier} · ${p.cp}</div></div>
       <span class="status-badge s-${ls.key}"><span class="bdot"></span>${ls.title}</span></div>
     <div class="tags">${tagHTML(p)}</div>
-    <div class="hours"><div class="hlabel"><b>${st.state==="ouverte"?st.label:(p.closedInSummer?"Fermée pour la saison":st.label)}</b><span class="per">${per}</span></div>
+    <div class="hours"><div class="hlabel"><b>${st.state==="ouverte"?st.label:(p.closedInSummer&&st.state==="fermee"?"Fermée pour la saison":st.label)}</b><span class="per">${per}</span></div>
       ${trackHTML(p)}${st.state==="ouverte"?SCALE_LABELS:""}</div></button>`; }
 function frDateShort(ds){ const [,m,d]=ds.split("-").map(Number); return `${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}`; }
 function applyFilters(){ const q=state.q.trim().toLowerCase(),now=new Date();
   return POOLS.filter(p=>{ const openTd=statusOn(p,now).state==="ouverte";
-    if(state.statut==="ouverte"&&!openTd)return false; if(state.statut==="fermee"&&openTd)return false;
+    if(state.statut==="ouverte"&&!openTd)return false; if(state.statut==="fermee"&&statusOn(p,now).state!=="fermee")return false;
     if(state.type==="olympique"&&!p.olympique)return false;
     else if(state.type!=="all"&&state.type!=="olympique"&&p.type!==state.type)return false;
     if(q){ const hay=(p.nom+" "+p.quartier+" "+p.secteur+" "+p.adresse+" "+p.features.join(" ")).toLowerCase(); if(!hay.includes(q))return false; }
@@ -1449,7 +1467,8 @@ function drawerHTML(p){ const now=new Date(), ls=liveState(p,now), st=ls.st;
   const bassins=p.bassins.map(b=>`<li><svg viewBox="0 0 24 24" fill="none"><path d="M4 15c1.5 0 1.5 1 3 1s1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1M4 11c1.5 0 1.5 1 3 1s1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>${b}</b></span></li>`).join("");
   const periods=p.schedules.length?p.schedules.map(s=>`<li><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.7"/></svg><span><b>${fmtH(s.open)} – ${fmtH(s.close)}</b> · ${frDateShort(s.from)} → ${frDateShort(s.to)}${s.note?` · <span style="color:var(--muted)">${s.note}</span>`:""}</span></li>`).join(""):`<li style="color:var(--muted)">Fermée durant l'été — horaires de l'année sur la fiche officielle.</li>`;
   let callout="";
-  if(ls.key==="closed"&&p.closedInSummer) callout=`<div class="callout closed"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 3h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Fermée pour la saison estivale.</b> ${p.note}</span></div>`;
+  if(ls.key==="unknown") callout=`<div class="callout unknown"><span><b>Horaires non connus${st.stale?" : données pas revérifiées depuis le "+frDate(META.updated):""}.</b> Consultez <a href="${p.lien||OFFICIAL_URL}" target="_blank" rel="noopener">la fiche officielle de la Mairie</a> avant d'y aller.</span></div>`;
+  else if(ls.key==="closed"&&p.closedInSummer) callout=`<div class="callout closed"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 3h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Fermée pour la saison estivale.</b> ${p.note}</span></div>`;
   else if(st.canicule) callout=`<div class="callout heat"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M6 18l-1.4 1.4M19.4 4.6 18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>Canicule :</b> horaires prolongés (jusqu'à ${fmtH(st.close)}) et <b>1 € l'entrée</b> aujourd'hui.</span></div>`;
   else if(p.canicule) callout=`<div class="callout heat"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Ouverture prolongée à 21 h les jours de canicule.</span></div>`;
   const bonnet=p.id==="nakache-ete"?`<div class="callout info"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span><b>Exception :</b> bonnet non obligatoire et short de bain toléré ici.</span></div>`
@@ -1462,7 +1481,7 @@ function drawerHTML(p){ const now=new Date(), ls=liveState(p,now), st=ls.st;
     <h2>${p.nom}</h2><div class="addr">📍 <span>${p.adresse}, ${p.cp} · ${p.quartier}</span></div></div>
   <div class="drawer-body">
     <div class="d-section"><div class="info-grid">
-      <div class="info-cell"><div class="ic-l">Statut · maintenant</div><div class="ic-v" style="font-size:14px;color:var(--${ls.key==="open"?"good":ls.key==="done"?"heat":ls.key==="soon"?"brand":ls.key==="upcoming"?"upc":"closed"}-ink)">${ls.title}</div></div>
+      <div class="info-cell"><div class="ic-l">Statut · maintenant</div><div class="ic-v" style="font-size:14px;color:var(--${ls.key==="unknown"?"ink-2":(ls.key==="open"?"good":ls.key==="done"?"heat":ls.key==="soon"?"brand":ls.key==="upcoming"?"upc":"closed")+"-ink"})">${ls.title}</div></div>
       <div class="info-cell"><div class="ic-l">Horaires du jour</div><div class="ic-v" style="font-size:14px">${st.state==="ouverte"?st.label:"—"}</div></div>
       <div class="info-cell"><div class="ic-l">Type</div><div class="ic-v" style="font-size:14px">${p.type==="plein-air"?"☀️ Plein air":p.type==="plage"?"🏖️ Plan d'eau":p.type==="nordique"?"🌊 Nordique":"Couverte"}</div></div>
       <div class="info-cell"><div class="ic-l">Secteur</div><div class="ic-v" style="font-size:14px">${p.secteur} de Toulouse</div></div>

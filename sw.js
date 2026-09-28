@@ -1,8 +1,8 @@
-/* Service worker — v2.
+/* Service worker — v3 (changer le nom de CACHE à chaque modification du code de index.html).
    - data.json : RÉSEAU D'ABORD (les mises à jour de données arrivent dès que possible),
      cache en secours hors-ligne.
    - Le reste (shell, icônes) : cache d'abord, réseau ensuite. */
-const CACHE = "piscines-tls-v2";
+const CACHE = "piscines-tls-v3";
 const ASSETS = [
   "./",
   "./index.html",
