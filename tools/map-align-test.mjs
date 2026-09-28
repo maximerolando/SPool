@@ -1,7 +1,9 @@
-import { chromium } from "playwright-core";
-const b = await chromium.launch({ executablePath:"/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+/* Vérifie que les marqueurs de la carte sont centrés sur leur position lat/lng.
+   Usage : node tools/map-align-test.mjs */
+import { launch } from "./browser.mjs";
+const b = await launch();
 const p = await b.newPage({ viewport:{width:1100,height:800} });
-await p.goto("file:///home/user/SPool/index.html", { waitUntil:"domcontentloaded" });
+await p.goto(new URL("../index.html", import.meta.url).href, { waitUntil:"domcontentloaded" });
 await p.click('.tab[data-view="carte"]');
 await p.waitForTimeout(1200);
 const res = await p.evaluate(() => {
@@ -18,4 +20,5 @@ console.log("Écart centre-icône vs projection latlng (px) :");
 for (const r of res) console.log(`  ${r.id}: dx=${r.dx} dy=${r.dy}`);
 const worst = Math.max(...res.map(r=>Math.max(Math.abs(r.dx),Math.abs(r.dy))));
 console.log(worst < 2 ? "✓ Rendu aligné — un décalage perçu vient des COORDONNÉES (données)" : "✗ Décalage de rendu détecté");
+process.exitCode = worst < 2 ? 0 : 1;
 await b.close();

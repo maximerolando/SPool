@@ -98,7 +98,7 @@ rénovation, incident) s'édite à la main lors d'un passage.
 index.html               ← l'app (autonome : police + Leaflet + données + logique inline)
 manifest.webmanifest · sw.js · icons/   ← PWA
 tools/build.mjs          ← injecte police (data-URI) + Leaflet, génère la version artifact
-tools/render.mjs         ← génère les icônes PNG et des captures de vérification (Chromium)
+tools/render.mjs         ← captures de vérification (Chromium) ; `--icons` régénère les icônes PNG
 ```
 
 Rebuild du gabarit (si vous ré-éditez les placeholders `__FONT_DATA_URI__` /

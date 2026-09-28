@@ -1,11 +1,16 @@
-/* Génère les icônes PNG (depuis les SVG) et capture des screenshots de vérif.
-   Utilise le Chromium pré-installé via playwright-core. */
-import { chromium } from "playwright-core";
-import { readFileSync, writeFileSync } from "node:fs";
+/* Capture des screenshots de vérif (et, avec --icons, régénère les icônes PNG depuis les SVG).
+   Usage : node tools/render.mjs [dossier-sortie] [--icons]   (sortie par défaut : $TMPDIR/spool-shots) */
+import { readFileSync, mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { launch } from "./browser.mjs";
 
-const EXEC = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
-const root = new URL("..", import.meta.url).pathname;
-const SP = process.argv[2] || "/tmp";
+const root = fileURLToPath(new URL("..", import.meta.url));
+const args = process.argv.slice(2);
+const ICONS = args.includes("--icons");
+const SP = args.find((a) => !a.startsWith("--")) || join(tmpdir(), "spool-shots");
+mkdirSync(SP, { recursive: true });
 
 const iconSvg = readFileSync(root + "icons/icon.svg", "utf8");
 // variante maskable : fond pleine surface + glyphe dans la zone de sécurité (~66%)
@@ -18,7 +23,7 @@ const maskable = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="51
     <path d="M170 232V150a34 34 0 0 1 68 0v170"/><path d="M300 232V150a34 34 0 0 1 68 0v170"/><path d="M170 180h130"/>
   </g></svg>`;
 
-const browser = await chromium.launch({ executablePath: EXEC });
+const browser = await launch();
 
 async function svgToPng(svg, size, out) {
   const page = await browser.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 });
@@ -29,9 +34,11 @@ async function svgToPng(svg, size, out) {
   console.log("✓ " + out);
 }
 
-await svgToPng(iconSvg, 512, root + "icons/icon-512.png");
-await svgToPng(iconSvg, 192, root + "icons/icon-192.png");
-await svgToPng(maskable, 512, root + "icons/icon-maskable-512.png");
+if (ICONS) {
+  await svgToPng(iconSvg, 512, root + "icons/icon-512.png");
+  await svgToPng(iconSvg, 192, root + "icons/icon-192.png");
+  await svgToPng(maskable, 512, root + "icons/icon-maskable-512.png");
+}
 
 // screenshots de vérification (clair desktop, sombre desktop, mobile)
 async function shot(theme, w, h, out, full) {
@@ -41,7 +48,8 @@ async function shot(theme, w, h, out, full) {
   page.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
   await page.goto("file://" + root + "index.html", { waitUntil: "networkidle" });
   await page.waitForTimeout(700);
-  await page.screenshot({ path: out, fullPage: !!full });
+  // Chrome headless refuse parfois la toute première capture (« Unable to capture screenshot ») : un nouvel essai suffit
+  await page.screenshot({ path: out, fullPage: !!full }).catch(() => page.waitForTimeout(500).then(() => page.screenshot({ path: out, fullPage: !!full })));
   await page.close();
   console.log("✓ " + out + (errs.length ? "  ⚠ ERREURS: " + errs.slice(0, 6).join(" | ") : "  (aucune erreur JS)"));
   return errs;
@@ -68,3 +76,4 @@ await shotView("annuaire", SP + "/shot-annuaire.png");
 await browser.close();
 const allErrs = [...e1, ...e2, ...e3];
 console.log(allErrs.length ? "\n⚠ Erreurs JS détectées" : "\n✅ Rendu OK, aucune erreur JS bloquante");
+process.exitCode = allErrs.length ? 1 : 0;

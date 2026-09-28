@@ -47,3 +47,39 @@ const openSummer = POOLS.filter(p => !p.closedInSummer).length;
 console.log(`• ${POOLS.length} piscines · ${openSummer} ouvertes en saison · ${NEWS.length} actus · alerte ${ALERT.active ? "ACTIVE (" + ALERT.type + ")" : "inactive"} · maj ${META.updated}`);
 if (errs.length) { console.error("✗ " + errs.length + " problème(s):\n  - " + errs.join("\n  - ")); process.exit(1); }
 console.log("✓ Données valides");
+
+/* ── Affichage honnête (règle 1 de CLAUDE.md) ──────────────────────────────
+   Fait tourner le MOTEUR de index.html (fonctions de calcul, sans affichage) sur les 14
+   prochains jours et vérifie ce que l'appli AFFICHERA, pas seulement la forme des données :
+   - « Fermée… » seulement si la fermeture est connue : une période d'horaires couvre ce jour
+     (ex. dimanche hors jours d'ouverture), ou closedInSummer pendant la saison d'été ;
+   - plus de 10 jours après META.updated : tout passe en « horaires non connus » (clé "unknown"). */
+const eStart = html.indexOf("*/", end) + 2, eEnd = html.indexOf("EN DIRECT", eStart);
+let engine;
+try { engine = new Function(block + ";" + html.slice(eStart, html.lastIndexOf("/*", eEnd)) + "; return { liveState };")(); }
+catch (e) { console.error("✗ MOTEUR illisible :", e.message); process.exit(1); }
+
+const STALE_DAYS = 10, WINDOW = 14;
+const bad = [], unknown = new Set();
+const today = new Date(); today.setHours(0, 0, 0, 0);
+const age = d => Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(META.updated + "T00:00:00")) / 864e5); // en jours, de minuit à minuit
+for (let i = 0; i < WINDOW; i++) for (const h of [12, 22]) {
+  const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i, h), ds = ymdLocal(d);
+  for (const p of POOLS) {
+    const ls = engine.liveState(p, d);
+    if (ls.key === "unknown") { unknown.add(p.id); continue; }
+    if (age(d) > STALE_DAYS) { bad.push(`${ds} ${h} h · ${p.id} : « ${ls.title} » alors que les données ont ${age(d)} jours (> ${STALE_DAYS}) — attendu « horaires non connus »`); continue; }
+    if (/^Fermée/.test(ls.title)) {
+      const covered = p.schedules.some(s => ds >= s.from && ds <= s.to);
+      const summer = p.closedInSummer && ds >= META.seasonFrom && ds <= META.seasonTo;
+      if (!covered && !summer) bad.push(`${ds} ${h} h · ${p.id} : « ${ls.title} » sans fermeture connue — attendu « horaires non connus »`);
+    }
+  }
+}
+function ymdLocal(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+if (bad.length) {
+  const shown = [...new Set(bad)];
+  console.error(`✗ Affichage faux : ${shown.length} cas sur les ${WINDOW} prochains jours\n  - ` + shown.slice(0, 15).join("\n  - ") + (shown.length > 15 ? `\n  … et ${shown.length - 15} autres` : ""));
+  process.exit(1);
+}
+console.log(`✓ Affichage honnête sur ${WINDOW} jours` + (unknown.size ? ` · ${unknown.size} piscine(s) en « horaires non connus » à un moment : ${[...unknown].join(", ")}` : ""));

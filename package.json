@@ -1,0 +1,19 @@
+{
+  "name": "spool",
+  "private": true,
+  "description": "SPool — piscines de Toulouse : site statique (index.html autonome) publié par GitHub Pages",
+  "type": "module",
+  "scripts": {
+    "check": "node tools/check.mjs",
+    "export": "node tools/export-data.mjs && node tools/check.mjs",
+    "serve": "python3 -m http.server 8080",
+    "render": "node tools/render.mjs",
+    "map-test": "node tools/map-align-test.mjs",
+    "verify": "node tools/check.mjs && node tools/render.mjs && node tools/map-align-test.mjs",
+    "compare": "node tools/compare-sources.mjs",
+    "publish": "node tools/publish.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

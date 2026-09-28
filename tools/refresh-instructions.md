@@ -60,6 +60,17 @@ cartes-2-france/webvilles/gralon publient les décimales du recensement des
 alban-minville, leo-lagrange. L'utilisateur peut aussi fournir des corrections
 via Maj+clic sur la carte de l'app.
 
+## Affichage honnête (vérifié par `node tools/check.mjs`)
+- Une piscine sans période d'horaires couvrant la date s'affiche « horaires non connus » avec
+  le lien officiel, **jamais « Fermée »**. Pour afficher une fermeture, il faut qu'elle soit
+  encodée : une période qui couvre les dates (les jours hors `days` sont alors fermés), ou
+  `closedInSummer:true` pendant la saison d'été.
+- Plus de 10 jours après `META.updated`, l'appli passe tout en « horaires non connus » : ne
+  mets à jour `META.updated` qu'après une vraie vérification.
+- Si `check` affiche « ✗ Affichage faux », corrige les données (ne touche pas au moteur).
+- Ne modifie pas `sources/mairie/` : ce sont les versions validées des fiches officielles,
+  mises à jour depuis le PC de Maxime (`npm run compare`).
+
 ## Règles de prudence
 - **Conservateur** : dans le doute, ne change rien et note l'incertitude dans le message
   de commit. Mieux vaut une donnée « à confirmer » qu'une fausse certitude.
