@@ -1137,14 +1137,14 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
    3) NEWS[]  4) POOLS[].schedules  →  le reste (live, carte, board) se régénère.
    Horaires en heures décimales (20.5 = 20 h 30). days: "all"|"weekdays"|"weekends"|[0..6].
    ═══════════════════════════════════════════════════════════════════════════ */
-let META = { updated:"2026-07-23", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13" };
+let META = { updated:"2026-09-28", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13" };
 
-/* Alerte en cours (canicule du 6 juillet 2026). overrides = fermeture prolongée par piscine. */
+/* Alerte (canicule été 2026) — levée : la saison estivale est terminée. */
 let ALERT = {
-  active:true, type:"canicule", from:"2026-07-06", to:null,
+  active:false, type:"canicule", from:"2026-07-06", to:"2026-08-30",
   title:"Canicule — mesures exceptionnelles",
   tarif:"1 € l'entrée dans toutes les piscines municipales",
-  detail:"Depuis le 6 juillet : tarif unique 1 € et horaires étendus. Toujours en vigueur au 23 juillet (aucune levée annoncée).",
+  detail:"Mesures estivales terminées avec la saison (tarif normal : 3,40 €).",
   overrides:{
     "papus":{close:21}, "yvonne-godard":{close:21, weekend:{open:12,close:21}},
     "bellevue":{close:21}, "alex-jany":{close:21}, "toulouse-lautrec":{close:21},
@@ -1153,6 +1153,12 @@ let ALERT = {
 };
 
 let NEWS = [
+  { date:"2026-09-14", type:"ouverture", pool:"leo-lagrange", title:"Léo Lagrange a rouvert",
+    body:"La piscine olympique du centre a rouvert avec ses horaires de l'année scolaire (créneaux matin/soir variables selon les jours — voir la fiche officielle avant d'y aller)." },
+  { date:"2026-08-30", type:"fermeture", pool:null, title:"Fin de la saison estivale",
+    body:"Les bassins d'été ont fermé (Alex Jany et La Ramée Plage le 23/08, Nakache été, Chapou et Castex fin août) et les piscines couvertes sont revenues aux horaires de l'année. Les mesures canicule (1 €, extensions) sont terminées — tarif normal : 3,40 €." },
+  { date:"2026-08-08", type:"canicule", pool:null, title:"5ᵉ épisode de canicule — 1 € relancé",
+    body:"Nouvel épisode de chaleur début août : la mairie a réactivé le tarif exceptionnel de 1 € l'entrée dans les piscines ouvertes, jusqu'à la fin de l'épisode." },
   { date:"2026-07-23", type:"info", pool:null, title:"Vigilance redescendue, mesures 1 € maintenues",
     body:"La Haute-Garonne est repassée en vigilance jaune après le pic de la mi-juillet, mais aucune levée officielle des mesures municipales (1 € l'entrée, extensions à 21 h) n'a été annoncée : elles restent affichées ici. À confirmer sur place." },
   { date:"2026-07-06", type:"canicule", pool:null, title:"Canicule : 1 € l'entrée + horaires étendus",
@@ -1166,9 +1172,7 @@ let NEWS = [
   { date:"2026-06-05", type:"fermeture", pool:"leo-lagrange", title:"Léo Lagrange ferme pour l'été",
     body:"Fermeture au public : clubs en juillet, vidange en août, réouverture à la rentrée." },
   { date:"2026-05-18", type:"ouverture", pool:"toulouse-lautrec", title:"Nouveau bassin 50 m « Gisèle Vallerey »",
-    body:"Toulouse-Lautrec s'agrandit d'un nouveau bassin sportif de 50 m au nord de la ville." },
-  { date:"2025-03-01", type:"travaux", pool:"yvonne-godard", title:"Pech David devient « Yvonne Godard »",
-    body:"Réouverture après 3 M€ de travaux, rebaptisée en hommage à la championne Yvonne Godard." }
+    body:"Toulouse-Lautrec s'agrandit d'un nouveau bassin sportif de 50 m au nord de la ville." }
 ];
 
 let POOLS = [
@@ -1213,7 +1217,7 @@ let POOLS = [
   { id:"leo-lagrange", nom:"Léo Lagrange", quartier:"Jean Jaurès", secteur:"Centre", adresse:"4 place Pierre-Paul Riquet", cp:"31000", coords:[43.6072,1.4542],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:false, closedInSummer:true,
     bassins:["Bassin olympique 50 m · 8 lignes","Bassin d'apprentissage 21 m"], features:["50 m olympique","Fermeture estivale"],
-    note:"La piscine olympique du centre ferme au public pour l'été : clubs en juillet, vidange en août, réouverture à la rentrée.",
+    note:"La piscine olympique du centre. Fermée au public l'été (clubs en juillet, vidange en août), elle a rouvert le 14 septembre 2026 avec ses horaires de l'année scolaire — créneaux matin/soir variables selon les jours, voir la fiche officielle.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-leo-lagrange", schedules:[] },
 
   { id:"bellevue", nom:"Bellevue (nordique)", quartier:"Route de Narbonne", secteur:"Sud", adresse:"69 ter route de Narbonne", cp:"31400", coords:[43.5670,1.4525],
