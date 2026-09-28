@@ -8,6 +8,16 @@ Tout tient dans **un seul `index.html` autonome** : police, données, logique et
 bibliothèque de carte sont embarquées. Aucune dépendance, aucun serveur requis.
 Seules les **tuiles de la carte** se chargent en ligne (voir plus bas).
 
+> **Comment ce projet est construit** : tenu par des agents Claude (une tâche planifiée
+> dans le cloud et des sessions locales), avec le plus petit setup qui garantit que
+> l'appli **n'affiche jamais un état faux**. Ce qui est vérifié, pourquoi, et ce qui n'est
+> volontairement pas installé : [`docs/CONSTRUCTION.md`](docs/CONSTRUCTION.md) ·
+> feuille de route et idées non retenues : [`docs/IDEES.md`](docs/IDEES.md) ·
+> chrono et prises des vérifications : [`docs/MESURES.md`](docs/MESURES.md).
+>
+> Application indépendante, non affiliée à la Mairie de Toulouse. Source : les fiches
+> officielles des piscines sur metropole.toulouse.fr.
+
 ---
 
 ## ✨ Les vues
@@ -99,7 +109,11 @@ index.html               ← l'app (autonome : police + Leaflet + données + log
 manifest.webmanifest · sw.js · icons/   ← PWA
 tools/build.mjs          ← injecte police (data-URI) + Leaflet, génère la version artifact
 tools/render.mjs         ← captures de vérification (Chromium) ; `--icons` régénère les icônes PNG
+tools/check.mjs          ← données + affichage honnête sur 14 jours (Node seul)
+tools/sources/ · tools/compare-sources.mjs · sources/mairie/   ← comparaison avec les fiches officielles
+tools/publish.mjs        ← publication seulement si tout passe
 ```
+Détail et raisons : [`docs/CONSTRUCTION.md`](docs/CONSTRUCTION.md).
 
 Rebuild du gabarit (si vous ré-éditez les placeholders `__FONT_DATA_URI__` /
 `__LEAFLET_CSS__` / `__LEAFLET_JS__`) :

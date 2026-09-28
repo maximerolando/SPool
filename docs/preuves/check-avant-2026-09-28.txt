@@ -1,0 +1,19 @@
+• 13 piscines · 11 ouvertes en saison · 10 actus · alerte inactive · maj 2026-09-28
+✓ Données valides
+✗ Affichage faux : 364 cas sur les 14 prochains jours
+  - 2026-09-28 12 h · nakache-ete : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · chapou-ete : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · castex : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · alex-jany : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · papus : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · leo-lagrange : « Fermée l'été » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · bellevue : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · alban-minville : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · toulouse-lautrec : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · la-faourette : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · yvonne-godard : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · jean-boiteux : « Fermée l'été » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 12 h · la-ramee-plage : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 22 h · nakache-ete : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  - 2026-09-28 22 h · chapou-ete : « Fermée » sans fermeture connue — attendu « horaires non connus »
+  … et 349 autres
