@@ -37,9 +37,8 @@ la demande de publication. Les refus ont tous été provoqués exprès (voir CON
 - **Monter les tests d'échec de la publication** : il fallait une copie jetable du dépôt, avec un
   faux GitHub local, pour ne rien envoyer par erreur. Deux essais ratés (mauvaise option git, puis
   test lancé sur l'ancien code) avant le bon.
-- **Identité git** : ce PC n'en avait pas. La seule adresse connue contenait le nom de
-  l'employeur de Maxime, dans un dépôt public. Question posée à Maxime → adresse GitHub privée
-  (`noreply`), réglée pour ce dépôt seulement.
+- **Identité git** : l'identité git par défaut ne convenait pas à un dépôt public → adresse GitHub
+  privée, pour ce dépôt seulement.
 - **Un en-tête HTTP avec des accents** faisait échouer silencieusement toute la collecte
   (13 fiches « statut 0 »). Repéré au premier essai, corrigé.
 - **Une erreur d'annonce** : fin d'installation annoncée à « 11 h 58 » de mémoire, alors que

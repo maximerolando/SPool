@@ -19,8 +19,10 @@ npm install            # une seule dépendance de dev : playwright-core (pour le
 npm run check          # node tools/check.mjs : données + affichage honnête sur 14 jours (« ✓ Affichage honnête »)
 npm run serve          # http://localhost:8080 (ou ouvrir index.html directement)
 npm run render         # captures dans $TMPDIR/spool-shots + détection d'erreurs JS (--icons régénère les PNG)
-npm run map-test       # alignement des marqueurs de la carte
-npm run verify         # les trois vérifications d'un coup
+npm run map-test       # carte : vraies tuiles (images différentes, sinon refus) + marqueurs alignés
+npm run screen-test    # écran à 390 px : phrases justes à 3 moments, mise en page, curseur, textes piégés
+npm run sw-test        # cache du téléphone : rien d'un autre site, 1 copie de data.json, mise à jour en 2 ouvertures
+npm run verify         # toutes les vérifications d'un coup
 npm run compare        # fiches officielles de la Mairie vs dernière version validée (sources/mairie/) — depuis ce PC
 npm run publish        # pull --rebase → vérifications → règle du cache sw.js → push (-- --dry-run : sans push)
 ```
@@ -47,7 +49,10 @@ sinon Google Chrome du système). Après une édition des données : `npm run ex
    par `npm run compare`. Après avoir corrigé les données selon un écart, valider avec
    `node tools/compare-sources.mjs --accept` (les fichiers `sources/mairie/` sont versionnés :
    leur historique est la preuve des vérifications).
-5. **Outils : n'en ajouter que s'ils garantissent quelque chose de précis ici.** Chaque outil a
+5. **Le robot du cloud ne modifie jamais un horaire, il le signale** (décision de Maxime,
+   29/09). Les textes des données ne contiennent ni `<` ni `>`, et les liens restent sur le
+   site de la Mairie (`check` le refuse sinon ; l'appli neutralise aussi tout texte affiché).
+6. **Outils : n'en ajouter que s'ils garantissent quelque chose de précis ici.** Chaque outil a
    un test qui le fait échouer exprès et un critère de retrait (voir `docs/CONSTRUCTION.md`).
    Une idée non retenue va dans `docs/IDEES.md`, pas dans le code.
 
@@ -57,7 +62,7 @@ Maxime dicte souvent à la voix : répondre en mots simples, court, sans jargon.
 
 | Maxime dit… | Claude fait |
 |---|---|
-| « vérifie les piscines » | `git pull`, `npm run compare`, explique chaque écart ; propose les corrections de données ; après accord : édite, `npm run export`, `--accept`, commit, puis demande pour publier |
+| « vérifie les piscines » | `git pull`, lit les signalements du robot (`git log --grep "À VÉRIFIER"`), `npm run compare`, explique chaque écart ; propose les corrections de données ; après accord : édite, `npm run export`, `--accept`, commit, puis demande pour publier |
 | « change X dans l'appli » | modifie, `npm run check` + `npm run render`, montre les captures ; nouveau nom de cache `sw.js` si le code a changé ; commit |
 | « montre-moi » | `npm run render` et montre les captures (ou `npm run serve` pour l'ouvrir dans le navigateur) |
 | « publie » | `npm run publish` ; en cas de refus, explique la raison en une phrase et corrige |

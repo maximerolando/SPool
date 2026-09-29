@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Piscines de Toulouse — Écran d'info estival</title>
-<meta name="description" content="Écran d'info des piscines de Toulouse : statut ouvert/fermé en direct, tableau des horaires, vraie carte, mesures canicule et fiche par piscine.">
+<title>Piscines de Toulouse — appli indépendante</title>
+<meta name="description" content="Piscines municipales de Toulouse : horaires connus d'après les fiches officielles de la Mairie, carte et fiche par piscine. Application indépendante.">
 <!-- PWA (installable Android / iOS) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0e93ab" media="(prefers-color-scheme: light)">
@@ -741,7 +741,7 @@ button{font-family:inherit;color:inherit}
 .icon-btn:hover{color:var(--ink);border-color:var(--brand);transform:translateY(-1px)}
 .icon-btn svg{width:19px;height:19px}
 .kiosk-progress{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--brand);transition:width .3s linear}
-@media (max-width:540px){.brandmark span{display:none}.season-pill{display:none}.topbar-inner{gap:8px}}
+@media (max-width:540px){.brandmark span{display:none}.season-pill{display:none!important}.topbar-inner{gap:8px}}
 .tabs{position:sticky;top:calc(57px + env(safe-area-inset-top,0px));z-index:990;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
 .tabs-inner{display:flex;gap:4px;max-width:var(--maxw);margin:0 auto;padding:8px clamp(14px,3vw,30px);overflow-x:auto;scrollbar-width:none}
 .tabs-inner::-webkit-scrollbar{display:none}
@@ -983,6 +983,8 @@ body.kiosk .ns-time b{font-size:clamp(2.6rem,8vw,4.2rem)}
 body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* 390 px (iPhone courant) : 4 onglets dans l'écran, textes du tableau sur 2 lignes plutôt que coupés — tools/screen-test.mjs */
+@media (max-width:480px){.tabs-inner{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;padding:6px 8px}.tab{position:relative;flex-direction:column;justify-content:center;gap:3px;padding:7px 2px;font-size:11.5px;white-space:normal;text-align:center;line-height:1.15}.tab .badge{position:absolute;top:3px;right:6px;font-size:10px;padding:0 5px}.bname,.bstate{white-space:normal;overflow:visible}.bstate{align-items:flex-start}.bstate .sdot{margin-top:4px}}
 </style>
 </head>
 <body>
@@ -991,10 +993,10 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
   <div class="topbar-inner">
     <div class="brandmark">
       <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M2 17c2 0 2 1.5 4 1.5S10 17 12 17s2 1.5 4 1.5 2-1.5 4-1.5M2 12c2 0 2 1.5 4 1.5S10 12 12 12s2 1.5 4 1.5S18 12 20 12M6 8.5V5.5a1.5 1.5 0 013 0v9M15 8.5v-3a1.5 1.5 0 013 0v9M9 8h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div><b>Piscines&nbsp;de&nbsp;Toulouse</b><span>Écran d'info · saison estivale</span></div>
+      <div><b>Piscines&nbsp;de&nbsp;Toulouse</b><span>Appli indépendante · source : sites de la Mairie</span></div>
     </div>
     <div class="spacer"></div>
-    <span class="season-pill"><span class="dot"></span><span id="seasonLbl">Été 2026</span></span>
+    <span class="season-pill" id="seasonPill" style="display:none"><span class="dot"></span><span id="seasonLbl"></span></span>
     <button class="icon-btn" id="refreshBtn" title="Actualiser les données" aria-label="Actualiser les données"><svg viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v4.5h-4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button class="icon-btn" id="kioskBtn" title="Mode kiosque" aria-label="Mode kiosque"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9V5a1 1 0 011-1h4M20 9V5a1 1 0 00-1-1h-4M4 15v4a1 1 0 001 1h4M20 15v4a1 1 0 01-1 1h-4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button class="icon-btn" id="themeBtn" title="Thème clair / sombre" aria-label="Thème clair ou sombre"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
@@ -1057,7 +1059,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
     <div class="map-card">
       <div class="map-head"><h2>Carte des piscines</h2><span class="hint">Clic : fiche & itinéraire · Maj+clic : coordonnées</span></div>
       <div id="leafletMap"></div>
-      <div class="map-fallback" id="mapFallback">🗺️ Le fond de carte ne se charge pas dans cet aperçu (réseau restreint). Il s'affiche normalement dans l'app hébergée ou en local. Les points restent cliquables.</div>
+      <div class="map-fallback" id="mapFallback">🗺️ Le fond de carte ne se charge pas (réseau ou service de cartes indisponible). Les points restent cliquables.</div>
       <div class="map-legend">
         <span class="lg"><span class="sw" style="background:var(--good)"></span>Ouverte maintenant</span>
         <span class="lg"><span class="sw" style="background:var(--brand)"></span>Ouvre plus tard</span>
@@ -1098,7 +1100,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
   <section class="view" id="view-infos">
     <div class="infos-grid">
       <div class="panel">
-        <div class="sec-title" style="margin-bottom:4px"><h2 style="font-size:1.2rem">Actualités de la saison</h2></div>
+        <div class="sec-title" style="margin-bottom:4px"><h2 style="font-size:1.2rem">Actualités</h2></div>
         <div class="stamp"><span class="st-dot"></span>Dernière mise à jour&nbsp;: <b id="updatedStamp">—</b></div>
         <div id="newsList" style="margin-top:12px"></div>
       </div>
@@ -1108,8 +1110,8 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
           <ul class="rules">
             <li>Bonnet de bain obligatoire partout, <b>sauf à Nakache été</b>.</li>
             <li>Short de bain interdit&nbsp;: slip ou boxer requis (sauf Nakache été).</li>
-            <li>Extension à <b>21 h</b> et <b>1 € l'entrée</b> pendant les alertes canicule.</li>
-            <li>Renseignements&nbsp;: <b>Allô Toulouse 31 01</b>.</li>
+            <li>Canicule (vigilance orange)&nbsp;: entrée à <b>1 €</b> dans les piscines municipales ouvertes (tarifs de la Mairie).</li>
+            <li>Horaires et tarifs officiels&nbsp;: <a href="https://metropole.toulouse.fr/sortir/sport/les-piscines-toulousaines" target="_blank" rel="noopener">les fiches des piscines sur le site de la Mairie</a>.</li>
           </ul>
         </div>
         <div class="panel info-block">
@@ -1122,7 +1124,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
         </div>
         <div class="panel info-block" style="margin-bottom:0">
           <h4>À propos</h4>
-          <p style="margin:0;font-size:13px;color:var(--ink-2);line-height:1.6">Les horaires de saison sont encodés et le statut ouvert/fermé se recalcule tout seul chaque jour. Les mesures exceptionnelles (canicule) et actualités sont mises à jour à la main. <b>Vérifiez toujours</b> l'horaire du jour sur le site officiel.</p>
+          <p style="margin:0;font-size:13px;color:var(--ink-2);line-height:1.6">Application indépendante, non affiliée à la Mairie de Toulouse. Les horaires affichés sont recopiés des fiches officielles des piscines ; quand aucun horaire n'est connu pour le jour, l'appli l'écrit («&nbsp;horaires non connus&nbsp;») au lieu de deviner. <b>Vérifiez toujours</b> l'horaire du jour sur la fiche officielle.</p>
         </div>
       </div>
     </div>
@@ -1145,7 +1147,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
    3) NEWS[]  4) POOLS[].schedules  →  le reste (live, carte, board) se régénère.
    Horaires en heures décimales (20.5 = 20 h 30). days: "all"|"weekdays"|"weekends"|[0..6].
    ═══════════════════════════════════════════════════════════════════════════ */
-let META = { updated:"2026-09-28", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13" };
+let META = { updated:"2026-09-28", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13", minApp:4 };
 
 /* Alerte (canicule été 2026) — levée : la saison estivale est terminée. */
 let ALERT = {
@@ -1210,14 +1212,14 @@ let POOLS = [
 
   { id:"alex-jany", nom:"Alex Jany", quartier:"Argoulets", secteur:"Est", adresse:"Avenue de Castres", cp:"31500", coords:[43.6228,1.4722],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:true, closedInSummer:false,
-    bassins:["Bassin 50 m couvert","Bassin d'apprentissage"], features:["50 m olympique","Bâtiment HQE","Bois & verre","21 h canicule"],
+    bassins:["Bassin 50 m couvert","Bassin d'apprentissage"], features:["50 m olympique","Bâtiment HQE","Bois & verre"],
     note:"Architecture bois-verre-métal (HQE) en lisière de la coulée verte des Argoulets, à l'est.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-alex-jany",
     schedules:[ {from:"2026-07-04",to:"2026-08-23",open:10,close:20,days:"all",note:"horaires d'été"} ] },
 
   { id:"papus", nom:"Papus", quartier:"Bagatelle", secteur:"Ouest", adresse:"64 allée de Guyenne", cp:"31100", coords:[43.5745,1.4180],
     saison:"annee", type:"couverte", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
-    bassins:["Bassin sportif de natation"], features:["Couverte","Complexe Papus-Merlettes","21 h canicule"],
+    bassins:["Bassin sportif de natation"], features:["Couverte","Complexe Papus-Merlettes"],
     note:"Bassin sportif du complexe Papus-Merlettes (Bagatelle), près de la ligne A du métro.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-papus",
     schedules:[ {from:"2026-06-30",to:"2026-08-30",open:12,close:19,days:"all",note:"horaires d'été"} ] },
@@ -1230,7 +1232,7 @@ let POOLS = [
 
   { id:"bellevue", nom:"Bellevue (nordique)", quartier:"Route de Narbonne", secteur:"Sud", adresse:"69 ter route de Narbonne", cp:"31400", coords:[43.5670,1.4525],
     saison:"annee", type:"nordique", olympique:false, aqualudique:false, canicule:true, closedInSummer:false,
-    bassins:["Bassin nordique extérieur 25 m","Aire de jeux d'eau"], features:["Bassin nordique extérieur","Complexe sportif","21 h canicule"],
+    bassins:["Bassin nordique extérieur 25 m","Aire de jeux d'eau"], features:["Bassin nordique extérieur","Complexe sportif"],
     note:"L'été, seul le bassin nordique extérieur (25 m) est ouvert, au sud près du campus. Aire de jeux d'eau pour enfants.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-bellevue",
     schedules:[ {from:"2026-07-05",to:"2026-08-30",open:10,close:20,days:"all",note:"bassin nordique"} ] },
@@ -1244,7 +1246,7 @@ let POOLS = [
 
   { id:"toulouse-lautrec", nom:"Toulouse-Lautrec", quartier:"Minimes", secteur:"Nord", adresse:"26 impasse Barthe", cp:"31200", coords:[43.6272,1.4403],
     saison:"annee", type:"couverte", olympique:true, aqualudique:false, canicule:true, closedInSummer:false,
-    bassins:["Halle Tournesol (dôme ouvrant)","Bassin 50 m Gisèle Vallerey (2026)"], features:["Dôme Tournesol","Nouveau 50 m","21 h canicule"],
+    bassins:["Halle Tournesol (dôme ouvrant)","Bassin 50 m Gisèle Vallerey (2026)"], features:["Dôme Tournesol","Nouveau 50 m"],
     note:"Piscine « Tournesol » à dôme ouvrant, agrandie en 2026 d'un bassin sportif de 50 m « Gisèle Vallerey », au nord.",
     lien:"https://metropole.toulouse.fr/annuaire/piscine-toulouse-lautrec",
     schedules:[ {from:"2026-07-04",to:"2026-08-30",open:10,close:20,days:"all",note:"horaires d'été"} ] },
@@ -1293,10 +1295,28 @@ function baseSchedule(p,date){ const ds=ymd(date),wd=date.getDay(); for(const s 
 /* Règle 1 : « Fermée » seulement si c'est connu (une période couvre ce jour, ou closedInSummer en saison).
    Sinon, ou si les données n'ont pas été revérifiées depuis STALE_DAYS jours : « horaires non connus ». */
 const STALE_DAYS=10, OFFICIAL_URL="https://metropole.toulouse.fr/sortir/sport/les-piscines-toulousaines";
+/* Accord appli/données : data.json porte META.minApp ; une appli plus ancienne ignore ces données et
+   passe en « horaires non connus » (elle ne sait pas les lire). */
+const APP=4; let appTooOld=false;
+/* Textes neutralisés : une partie des données est écrite par un robot d'après le web. Tout texte est
+   échappé (& < > " ') à son entrée, AVANT tout affichage ; un lien hors du site de la Mairie est remplacé. */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function clean(v){ return typeof v==="string"?esc(v):Array.isArray(v)?v.map(clean):(v&&typeof v==="object")?Object.fromEntries(Object.entries(v).map(([k,x])=>[k,clean(x)])):v; }
+function cleanData(d){ const c=clean(d); for(const p of c.POOLS||[]){ if(!/^https:\/\/metropole\.toulouse\.fr\//.test(p.lien||"")) p.lien=OFFICIAL_URL; p.coords=(p.coords||[]).map(Number); } return c; }
+/* Seule porte d'entrée des données distantes. Renvoie true si l'état affiché change. */
+function acceptData(d){
+  if(!d||!Array.isArray(d.POOLS)||d.POOLS.length<5) throw new Error("données invalides");
+  if((((d.META||{}).minApp)||0)>APP){ const was=appTooOld; appTooOld=true; return !was; }
+  const c=cleanData({META:d.META,ALERT:d.ALERT,NEWS:d.NEWS,POOLS:d.POOLS});
+  const next={META:c.META||META,ALERT:c.ALERT||ALERT,NEWS:c.NEWS||NEWS,POOLS:c.POOLS};
+  if(JSON.stringify(next)===JSON.stringify({META,ALERT,NEWS,POOLS})) return false;
+  ({META,ALERT,NEWS,POOLS}=next); return true;
+}
+({META,ALERT,NEWS,POOLS}=cleanData({META,ALERT,NEWS,POOLS}));
 function dataAge(date){ return Math.round((new Date(date.getFullYear(),date.getMonth(),date.getDate())-new Date(META.updated+"T00:00:00"))/864e5); }
 function alertActiveOn(ds){ return ALERT.active && ds>=ALERT.from && (ALERT.to==null||ds<=ALERT.to); }
 function statusOn(p,date){
-  if(dataAge(date)>STALE_DAYS) return {state:"inconnu",stale:true,label:"Horaires non connus"};
+  if(appTooOld||dataAge(date)>STALE_DAYS) return {state:"inconnu",stale:true,label:"Horaires non connus"};
   const s=baseSchedule(p,date);
   if(s){
     let open=s.open,close=s.close,canic=false; const ds=ymd(date),ov=ALERT.overrides[p.id];
@@ -1343,16 +1363,21 @@ function renderLive(){
   $("#ccMiniO").textContent=`${openNow} ouvertes`; $("#ccMiniC").textContent=unkNow?`${unkNow} non connue${unkNow>1?"s":""}`+(total-openNow-unkNow?` · ${total-openNow-unkNow} autres`:""):`${total-openNow} autres`;
   $("#factAir").textContent=POOLS.filter(p=>p.type==="plein-air"||p.type==="plage"||p.type==="nordique").length;
   $("#factOly").textContent=POOLS.filter(p=>p.olympique).length; $("#factTot").textContent=total;
-  const tips=["💡 Bonnet obligatoire partout, sauf à Nakache été.","🩳 Short de bain interdit : slip ou boxer requis (sauf Nakache été).","🌡️ Canicule : 1 € l'entrée et horaires prolongés à 21 h.","🏊 Toulouse compte 3 grands bassins de 50 m ouverts l'été.","☀️ Nakache, Chapou, Castex et La Ramée sont en plein air.","📞 Infos & tarifs : Allô Toulouse 31 01."];
-  $("#factTip").textContent=tips[Math.floor(now.getMinutes()/10)%tips.length];
+  const tips=tipsFor(now); $("#factTip").innerHTML=tips[Math.floor(now.getMinutes()/10)%tips.length];
+  const ds=ymd(now), inS=ds>=META.seasonFrom&&ds<=META.seasonTo; $("#seasonPill").style.display=inS?"":"none"; $("#seasonLbl").innerHTML=inS?META.season:"";
   renderAlert(); renderBoard(now);
 }
+/* Astuces : seulement ce qui est vrai maintenant (la mesure canicule n'apparaît que si l'alerte est active). */
+function tipsFor(now){ const t=["💡 Bonnet obligatoire partout, sauf à Nakache été.","🩳 Short de bain interdit : slip ou boxer requis (sauf Nakache été).",
+  "☀️ Nakache, Chapou, Castex et La Ramée sont en plein air.","📞 Horaires et tarifs officiels : fiches des piscines sur metropole.toulouse.fr."];
+  if(alertActiveOn(ymd(now))) t.splice(2,0,"🌡️ Canicule : "+ALERT.tarif+".");
+  return t; }
 function alertDismissed(){ try{ return localStorage.getItem("spool-alert-dismissed")===ALERT.from; }catch(e){ return false; } }
 function renderAlert(){
   const slot=$("#alertSlot"), chip=$("#alertChip");
   const active=alertActiveOn(ymd(new Date()));
   const now=new Date(), unk=POOLS.filter(p=>statusOn(p,now).state==="inconnu"), stale=dataAge(now)>STALE_DAYS;
-  const unkNote=unk.length?`<div class="callout unknown" style="margin-bottom:16px"><span><b>${stale?"Données pas revérifiées depuis le "+frDate(META.updated):unk.length+" piscine"+(unk.length>1?"s":"")+" sans horaire connu aujourd'hui"}.</b> Rien n'est affiché comme « fermé » sans source : consultez <a href="${OFFICIAL_URL}" target="_blank" rel="noopener">les horaires officiels de la Mairie</a> avant d'y aller.</span></div>`:"";
+  const unkNote=appTooOld?`<div class="callout unknown" style="margin-bottom:16px"><span><b>Cette version de l'appli est trop ancienne pour les dernières données.</b> Fermez-la puis rouvrez-la pour la mettre à jour ; en attendant, consultez <a href="${OFFICIAL_URL}" target="_blank" rel="noopener">les horaires officiels de la Mairie</a>.</span></div>`:unk.length?`<div class="callout unknown" style="margin-bottom:16px"><span><b>${stale?"Données pas revérifiées depuis le "+frDate(META.updated):unk.length+" piscine"+(unk.length>1?"s":"")+" sans horaire connu aujourd'hui"}.</b> Rien n'est affiché comme « fermé » sans source : consultez <a href="${OFFICIAL_URL}" target="_blank" rel="noopener">les horaires officiels de la Mairie</a> avant d'y aller.</span></div>`:"";
   if(active && !alertDismissed()){
     slot.innerHTML=unkNote+`<div class="alert" style="margin-bottom:16px"><div class="a-bg"></div><div class="a-ic">🌡️</div>
       <div><div class="a-t">${ALERT.title}</div><div class="a-b"><b>${ALERT.tarif}.</b> ${ALERT.detail}</div></div>
@@ -1364,6 +1389,9 @@ function renderAlert(){
     chip.onclick=()=>{ try{localStorage.removeItem("spool-alert-dismissed");}catch(e){} renderAlert(); };
   }
 }
+/* Réécrit un bloc seulement s'il a changé, et garde le curseur clavier sur la même ligne (data-id). */
+function setRows(el,html){ if(el._html===html) return; const a=document.activeElement, id=el.contains(a)&&a.dataset?a.dataset.id:null;
+  el.innerHTML=html; el._html=html; if(id){ const n=el.querySelector(`[data-id="${CSS.escape(id)}"]`); if(n) n.focus({preventScroll:true}); } }
 function renderBoard(now){
   $("#boardDate").textContent=cap(now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}));
   $("#boardAxis").innerHTML=TICKS.map(t=>`<span style="left:${bpct(t)}%">${t} h</span>`).join("");
@@ -1380,7 +1408,7 @@ function renderBoard(now){
   }).join("");
   const nowH=hd(now); const showNow=nowH>=BSCALE.start&&nowH<=BSCALE.end;
   const nowLine=showNow?`<div class="board-now" style="left:calc(var(--labelW) + (100% - var(--labelW)) * ${bpct(nowH)/100})"><b>${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}</b></div>`:"";
-  $("#boardRows").innerHTML=html+nowLine;
+  setRows($("#boardRows"),html+nowLine);
 }
 
 /* ═══════════════════════════════════════════════════════════ CARTE (Leaflet) */
@@ -1390,7 +1418,7 @@ function markerIcon(p,ls){ const air=(p.type==="plein-air"||p.type==="plage"||p.
     html:`<div class="lmark s-${ls.key} ${air?"air":""}">${(p.type==="plein-air"||p.type==="plage")?"<span>☀</span>":""}</div>`}); }
 function mapsUrl(p){ return `https://www.google.com/maps/dir/?api=1&destination=${p.coords[0]},${p.coords[1]}`; }
 function popupHTML(p,ls){ return `<div class="lpop"><b>${p.nom}</b><div class="lp-st s-${ls.key}">${ls.title}${ls.detail?" · "+ls.detail:""}${ls.st.state==="ouverte"?" ("+ls.st.label+")":""}</div>
-  <div class="lpop-actions"><button class="prim" onclick="openDrawer('${p.id}')">Voir la fiche</button><a href="${mapsUrl(p)}" target="_blank" rel="noopener">Itinéraire</a></div></div>`; }
+  <div class="lpop-actions"><button class="prim" data-open="${p.id}">Voir la fiche</button><a href="${mapsUrl(p)}" target="_blank" rel="noopener">Itinéraire</a></div></div>`; }
 function addMarkers(){
   const now=new Date();
   POOLS.forEach(p=>{ const ls=liveState(p,now); const m=L.marker(p.coords,{icon:markerIcon(p,ls),title:p.nom}).addTo(map);
@@ -1405,11 +1433,13 @@ function rebuildMapMarkers(){
 function initMap(){
   if(map){ map.invalidateSize(); updateMapMarkers(); return; }
   map=L.map("leafletMap",{zoomControl:true,scrollWheelZoom:true});
-  const tiles=L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-    {maxZoom:19,subdomains:"abcd",attribution:'&copy; OpenStreetMap, &copy; CARTO'});
+  // Plan IGN (Géoplateforme de l'IGN) : service public, sans clé ni compte, Licence Ouverte (crédit obligatoire)
+  const tiles=L.tileLayer("https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png",
+    {maxZoom:19,attribution:'Plan IGN &copy; <a href="https://www.ign.fr/" target="_blank" rel="noopener">IGN</a> · Licence Ouverte'});
   let errs=0; tiles.on("tileerror",()=>{ if(++errs>3) $("#mapFallback").classList.add("show"); });
   tiles.addTo(map);
   addMarkers();
+  map.on("popupopen",e=>{ const bt=e.popup.getElement().querySelector("[data-open]"); if(bt) bt.addEventListener("click",()=>openDrawer(bt.dataset.open)); });
   // aide au recalage : Maj+clic affiche les coordonnées du point cliqué (à reporter dans POOLS[].coords)
   map.on("click",e=>{ if(!e.originalEvent||!e.originalEvent.shiftKey) return;
     L.popup().setLatLng(e.latlng).setContent(`<div class="lpop"><b>Coordonnées</b><span class="tnum">${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}</span></div>`).openOn(map); });
@@ -1425,7 +1455,7 @@ function tagHTML(p){ const t=[];
   if(p.type==="nordique") t.push(`<span class="tag terra">🌊 Bassin nordique</span>`);
   if(p.olympique) t.push(`<span class="tag brand">50 m olympique</span>`);
   if(p.aqualudique) t.push(`<span class="tag brand">Aqualudique</span>`);
-  if(p.canicule) t.push(`<span class="tag heat">🌡️ 21 h canicule</span>`);
+  if(alertActiveOn(ymd(new Date()))&&ALERT.overrides[p.id]) t.push(`<span class="tag heat">🌡️ Horaires canicule</span>`);
   if(p.saison==="ete") t.push(`<span class="tag">Été uniquement</span>`);
   t.push(`<span class="tag">${p.secteur}</span>`); return t.join(""); }
 function trackHTML(p,big){ const st=statusOn(p,new Date());
@@ -1435,23 +1465,26 @@ function trackHTML(p,big){ const st=statusOn(p,new Date());
   return `<div class="track ${big?'big-track':''}"><div class="fill ${cls}" style="left:${l}%;width:${Math.max(1,r-l)}%"></div>${showNow?`<div class="nowmark" style="left:${bpct(h)}%"></div>`:""}</div>`; }
 const SCALE_LABELS=`<div class="scale"><span>6 h</span><span>9 h</span><span>12 h</span><span>15 h</span><span>18 h</span><span>21 h</span></div>`;
 function cardHTML(p){ const now=new Date(), ls=liveState(p,now), st=ls.st;
-  const per=p.schedules[0]?`${frDateShort(p.schedules[0].from)}–${frDateShort(p.schedules[p.schedules.length-1].to)}`:(p.closedInSummer?"saison estivale":"");
+  const cur=knownPeriods(p,now), per=cur.length?`${frDateShort(cur[0].from)}–${frDateShort(cur[cur.length-1].to)}`:"";
   return `<button class="pcard s-${ls.key}" data-id="${p.id}" aria-label="Fiche ${p.nom}"><div class="status-rail"></div>
     <div class="row1"><div style="min-width:0"><h3>${p.nom}</h3><div class="quartier">📍 ${p.quartier} · ${p.cp}</div></div>
       <span class="status-badge s-${ls.key}"><span class="bdot"></span>${ls.title}</span></div>
     <div class="tags">${tagHTML(p)}</div>
     <div class="hours"><div class="hlabel"><b>${st.state==="ouverte"?st.label:(p.closedInSummer&&st.state==="fermee"?"Fermée pour la saison":st.label)}</b><span class="per">${per}</span></div>
       ${trackHTML(p)}${st.state==="ouverte"?SCALE_LABELS:""}</div></button>`; }
+function knownPeriods(p,now){ const ds=ymd(now); return p.schedules.filter(s=>s.to>=ds); }
 function frDateShort(ds){ const [,m,d]=ds.split("-").map(Number); return `${String(d).padStart(2,"0")}/${String(m).padStart(2,"0")}`; }
 function applyFilters(){ const q=state.q.trim().toLowerCase(),now=new Date();
   return POOLS.filter(p=>{ const openTd=statusOn(p,now).state==="ouverte";
     if(state.statut==="ouverte"&&!openTd)return false; if(state.statut==="fermee"&&statusOn(p,now).state!=="fermee")return false;
     if(state.type==="olympique"&&!p.olympique)return false;
     else if(state.type!=="all"&&state.type!=="olympique"&&p.type!==state.type)return false;
-    if(q){ const hay=(p.nom+" "+p.quartier+" "+p.secteur+" "+p.adresse+" "+p.features.join(" ")).toLowerCase(); if(!hay.includes(q))return false; }
+    if(q){ const hay=(p.nom+" "+p.quartier+" "+p.secteur+" "+p.adresse+" "+p.features.join(" ")).toLowerCase(); if(!hay.includes(esc(q)))return false; }
     return true; }); }
 function renderAnnuaire(){ const list=applyFilters();
-  $("#cardgrid").innerHTML=list.map(cardHTML).join(""); $("#empty").classList.toggle("show",list.length===0);
+  setRows($("#cardgrid"),list.map(cardHTML).join("")); $("#empty").classList.toggle("show",list.length===0);
+  const unk=POOLS.filter(p=>statusOn(p,new Date()).state==="inconnu").length;
+  $("#empty").innerHTML=(state.statut==="ouverte"&&unk)?`<h3>Aucune ouverture connue aujourd'hui</h3><p>${unk} piscine${unk>1?"s ont":" a"} des horaires non connus : consultez <a href="${OFFICIAL_URL}" target="_blank" rel="noopener">les horaires officiels de la Mairie</a>.</p>`:`<h3>Aucune piscine ne correspond</h3><p>Élargissez vos filtres ou videz la recherche.</p>`;
   $("#count").innerHTML=`<b>${list.length}</b> / ${POOLS.length} piscines`; }
 
 /* ═══════════════════════════════════════════════════════════ INFOS */
@@ -1465,12 +1498,11 @@ function renderInfos(){ $("#updatedStamp").textContent=frDate(META.updated);
 function drawerHTML(p){ const now=new Date(), ls=liveState(p,now), st=ls.st;
   const mUrl=mapsUrl(p), feat=p.features.map(f=>`<span class="tag">${f}</span>`).join("");
   const bassins=p.bassins.map(b=>`<li><svg viewBox="0 0 24 24" fill="none"><path d="M4 15c1.5 0 1.5 1 3 1s1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1M4 11c1.5 0 1.5 1 3 1s1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>${b}</b></span></li>`).join("");
-  const periods=p.schedules.length?p.schedules.map(s=>`<li><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.7"/></svg><span><b>${fmtH(s.open)} – ${fmtH(s.close)}</b> · ${frDateShort(s.from)} → ${frDateShort(s.to)}${s.note?` · <span style="color:var(--muted)">${s.note}</span>`:""}</span></li>`).join(""):`<li style="color:var(--muted)">Fermée durant l'été — horaires de l'année sur la fiche officielle.</li>`;
+  const periods=knownPeriods(p,now).length?knownPeriods(p,now).map(s=>`<li><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.7"/></svg><span><b>${fmtH(s.open)} – ${fmtH(s.close)}</b> · ${frDateShort(s.from)} → ${frDateShort(s.to)}${s.note?` · <span style="color:var(--muted)">${s.note}</span>`:""}</span></li>`).join(""):`<li style="color:var(--muted)">Aucun horaire connu à venir — voir la fiche officielle de la Mairie.</li>`;
   let callout="";
   if(ls.key==="unknown") callout=`<div class="callout unknown"><span><b>Horaires non connus${st.stale?" : données pas revérifiées depuis le "+frDate(META.updated):""}.</b> Consultez <a href="${p.lien||OFFICIAL_URL}" target="_blank" rel="noopener">la fiche officielle de la Mairie</a> avant d'y aller.</span></div>`;
   else if(ls.key==="closed"&&p.closedInSummer) callout=`<div class="callout closed"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 3h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Fermée pour la saison estivale.</b> ${p.note}</span></div>`;
   else if(st.canicule) callout=`<div class="callout heat"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6 6 4.6 4.6M19.4 19.4 18 18M6 18l-1.4 1.4M19.4 4.6 18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><b>Canicule :</b> horaires prolongés (jusqu'à ${fmtH(st.close)}) et <b>1 € l'entrée</b> aujourd'hui.</span></div>`;
-  else if(p.canicule) callout=`<div class="callout heat"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Ouverture prolongée à 21 h les jours de canicule.</span></div>`;
   const bonnet=p.id==="nakache-ete"?`<div class="callout info"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span><b>Exception :</b> bonnet non obligatoire et short de bain toléré ici.</span></div>`
     :p.type==="plage"?`<div class="callout info"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/></svg><span>Baignade surveillée en lac — accès selon la sécurité du plan d'eau.</span></div>`
     :`<div class="callout info"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 8h.01M11 12h1v4h1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Bonnet de bain obligatoire · slip ou boxer de bain requis.</span></div>`;
@@ -1488,7 +1520,7 @@ function drawerHTML(p){ const now=new Date(), ls=liveState(p,now), st=ls.st;
     </div></div>
     ${st.state==="ouverte"?`<div class="d-section"><h4>Amplitude d'ouverture (aujourd'hui)</h4>${trackHTML(p,true)}${SCALE_LABELS}</div>`:""}
     ${callout?`<div class="d-section">${callout}</div>`:""}
-    <div class="d-section"><h4>Horaires de la saison</h4><ul class="d-list">${periods}</ul></div>
+    <div class="d-section"><h4>Horaires connus</h4><ul class="d-list">${periods}</ul></div>
     <div class="d-section"><h4>Les bassins</h4><ul class="d-list">${bassins}</ul></div>
     <div class="d-section"><h4>Caractéristiques</h4><div class="feature-list">${feat}</div></div>
     <div class="d-section"><h4>À propos</h4><p style="margin:0;color:var(--ink-2);font-size:14px;line-height:1.6">${p.note}</p></div>
@@ -1560,14 +1592,9 @@ async function loadRemoteData(manual){
   try{
     const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});
     if(!r.ok) throw new Error("http "+r.status);
-    const d=await r.json();
-    if(!d || !Array.isArray(d.POOLS) || d.POOLS.length<5) throw new Error("données invalides");
-    const before=JSON.stringify({META,ALERT,NEWS,POOLS});
-    const after=JSON.stringify({META:d.META||META,ALERT:d.ALERT||ALERT,NEWS:d.NEWS||NEWS,POOLS:d.POOLS});
-    if(after!==before){
-      META=d.META||META; ALERT=d.ALERT||ALERT; NEWS=d.NEWS||NEWS; POOLS=d.POOLS;
+    if(acceptData(await r.json())){
       renderLive(); renderInfos(); if(state.view==="annuaire")renderAnnuaire(); rebuildMapMarkers();
-      toast("✓ Données actualisées — "+frDate(META.updated));
+      toast(appTooOld?"Appli à mettre à jour : fermez-la puis rouvrez-la":"✓ Données actualisées — "+frDate(META.updated));
     } else if(manual) toast("Déjà à jour ("+frDate(META.updated)+")");
   }catch(e){ if(manual) toast("Actualisation impossible — données embarquées utilisées"); }
   finally{ if(btn)btn.classList.remove("spinning"); }
@@ -1578,7 +1605,8 @@ try{ history.replaceState({view:"live"},""); }catch(e){}
 loadRemoteData(false);
 setInterval(()=>{ renderLive(); if(state.view==="carte")updateMapMarkers(); if(state.view==="annuaire")renderAnnuaire(); },30000);
 setInterval(()=>loadRemoteData(false), 15*60*1000);
-if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+// à chaque ouverture, demander au navigateur s'il existe une nouvelle version (sinon il le fait quand il veut)
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").then(r=>r.update()).catch(()=>{})); }
 </script>
 </body>
 </html>

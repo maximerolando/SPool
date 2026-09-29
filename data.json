@@ -3,7 +3,8 @@
   "updated": "2026-09-28",
   "season": "Été 2026",
   "seasonFrom": "2026-06-05",
-  "seasonTo": "2026-09-13"
+  "seasonTo": "2026-09-13",
+  "minApp": 4
  },
  "ALERT": {
   "active": false,
@@ -276,8 +277,7 @@
    "features": [
     "50 m olympique",
     "Bâtiment HQE",
-    "Bois & verre",
-    "21 h canicule"
+    "Bois & verre"
    ],
    "note": "Architecture bois-verre-métal (HQE) en lisière de la coulée verte des Argoulets, à l'est.",
    "lien": "https://metropole.toulouse.fr/annuaire/piscine-alex-jany",
@@ -314,8 +314,7 @@
    ],
    "features": [
     "Couverte",
-    "Complexe Papus-Merlettes",
-    "21 h canicule"
+    "Complexe Papus-Merlettes"
    ],
    "note": "Bassin sportif du complexe Papus-Merlettes (Bagatelle), près de la ligne A du métro.",
    "lien": "https://metropole.toulouse.fr/annuaire/piscine-papus",
@@ -382,8 +381,7 @@
    ],
    "features": [
     "Bassin nordique extérieur",
-    "Complexe sportif",
-    "21 h canicule"
+    "Complexe sportif"
    ],
    "note": "L'été, seul le bassin nordique extérieur (25 m) est ouvert, au sud près du campus. Aire de jeux d'eau pour enfants.",
    "lien": "https://metropole.toulouse.fr/annuaire/piscine-bellevue",
@@ -460,8 +458,7 @@
    ],
    "features": [
     "Dôme Tournesol",
-    "Nouveau 50 m",
-    "21 h canicule"
+    "Nouveau 50 m"
    ],
    "note": "Piscine « Tournesol » à dôme ouvrant, agrandie en 2026 d'un bassin sportif de 50 m « Gisèle Vallerey », au nord.",
    "lien": "https://metropole.toulouse.fr/annuaire/piscine-toulouse-lautrec",

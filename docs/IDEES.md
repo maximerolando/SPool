@@ -54,10 +54,11 @@ reconnue.
 3. **Proposer à l'équipe open data de publier les horaires** en données ouvertes. Alors
    `tools/sources/opendata.mjs` remplacerait la lecture des fiches.
 4. **Jamais de logo ni d'apparence officielle.** Mention visible : « application indépendante,
-   source : sites de la Mairie ». **À ajouter dans l'appli avant tout partage public** : au
-   28/09, elle n'apparaît que dans le README, pas dans l'appli.
+   source : sites de la Mairie ». Présente dans l'appli depuis la v4 (sous-titre et
+   « À propos »).
 
 ## Mobile
 
-- Application Android native via Capacitor : voir `docs/INSTALL-MOBILE.md`. Pas nécessaire tant
-  que l'appli installée depuis le navigateur (PWA) suffit.
+- Application native pour les stores (par ex. avec Capacitor, qui envelopperait ce même
+  `index.html`) : ni faite ni essayée. Pas nécessaire tant que l'appli installée depuis le
+  navigateur (PWA) suffit.
