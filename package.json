@@ -9,9 +9,11 @@
     "serve": "python3 -m http.server 8080",
     "render": "node tools/render.mjs",
     "map-test": "node tools/map-align-test.mjs",
-    "verify": "node tools/check.mjs && node tools/render.mjs && node tools/map-align-test.mjs",
+    "verify": "node tools/check.mjs && node tools/render.mjs && node tools/map-align-test.mjs && node tools/screen-test.mjs && node tools/sw-test.mjs",
     "compare": "node tools/compare-sources.mjs",
-    "publish": "node tools/publish.mjs"
+    "publish": "node tools/publish.mjs",
+    "screen-test": "node tools/screen-test.mjs",
+    "sw-test": "node tools/sw-test.mjs"
   },
   "devDependencies": {
     "playwright-core": "^1.63.0"

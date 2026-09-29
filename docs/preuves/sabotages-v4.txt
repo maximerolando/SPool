@@ -1,0 +1,31 @@
+### S1 carte : fournisseur injoignable (adresse des tuiles cassée)
+Fond de carte : 0 tuile(s) reçue(s) de — · 0 image(s) différente(s)
+✗ Aucune tuile reçue : la carte n'a pas de fond
+✓ Marqueurs alignés (13, écart max 0.5 px) — un décalage perçu vient des COORDONNÉES (données)
+→ code 1
+### S2 cache : installation sans contourner le cache du navigateur
+✗ 1 problème(s) de cache :
+  - mise à jour : nouvelle version jamais vue en 3 ouvertures (attendu : 2 au plus)
+→ code 1
+### S3 cache : les autres sites de nouveau mis en cache
+✗ 1 problème(s) de cache :
+  - cache : 6 entrée(s) d'un autre site, ex. https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX=11&TILEROW=747&TILECOL=1032&FORMAT=image/png
+→ code 1
+### S4 textes : neutralisation désactivée
+✗ 1 problème(s) à l'écran :
+  - injection : un texte piégé s'exécute ou devient un lien actif (6 exécution(s), 0 lien(s) javascript:)
+→ code 1
+### S5 curseur : réécriture brute du tableau
+✗ 1 problème(s) à l'écran :
+  - curseur : après le recalcul, le focus quitte la ligne Papus (→ BODY)
+→ code 1
+### S6 phrases : le numéro sans source revient
+✗ 3 problème(s) à l'écran :
+  - phrase · en saison (15/07, 15 h 25) : numéro sans source officielle — « Allô Toulouse 31 01 »
+  - phrase · lendemain de la mise à jour, 16 h 25 : numéro sans source officielle — « Allô Toulouse 31 01 »
+  - phrase · données périmées (+12 jours) : numéro sans source officielle — « Allô Toulouse 31 01 »
+→ code 1
+### S7 accord appli/données : données qui exigent une appli plus récente
+✓ Données valides
+✗ META.minApp = 5 mais l'appli est en version 4 : elle ignorerait ses propres données
+→ code 1

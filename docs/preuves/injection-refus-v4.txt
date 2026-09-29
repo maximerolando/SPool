@@ -1,0 +1,5 @@
+• 13 piscines · 11 ouvertes en saison · 10 actus · alerte inactive · maj 2026-09-28
+✗ 1 problème(s):
+  - données.NEWS[0].title : « < » ou « > » interdit dans un texte (Léo Lagrange a rouvert<img src=x onerror="console.log('INJEC)
+✗ 1 problème(s):
+  - papus: lien hors du site de la Mairie (https://exemple-piege.fr/papus)

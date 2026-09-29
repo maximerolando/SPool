@@ -2,7 +2,7 @@
    Garantit que rien ne part de ce PC vers les téléphones sans vérification, et qu'un changement
    de code atteint vraiment les applis installées (sw.js sert index.html depuis son cache :
    sans nouveau nom de cache, les téléphones gardent l'ancienne version).
-   Étapes : arbre propre → git pull --rebase → check → render → map-test → règle du cache → push.
+   Étapes : arbre propre → git pull --rebase → check → render → carte → écran → cache → règle du nom de cache → push.
    Usage : npm run publish            (Claude ne la lance qu'après l'accord de Maxime)
            npm run publish -- --dry-run   tout sauf le push */
 import { execFileSync, spawnSync } from "node:child_process";
@@ -21,7 +21,9 @@ try { git("pull", "--rebase", "origin", BRANCH); } catch { stop("git pull --reba
 const ahead = +git("rev-list", "--count", `origin/${BRANCH}..HEAD`);
 if (!ahead) { console.log("✓ Rien à publier : déjà à jour avec GitHub"); process.exit(0); }
 
-for (const [name, script] of [["données + affichage honnête", "tools/check.mjs"], ["rendu sans erreur JS", "tools/render.mjs"], ["alignement de la carte", "tools/map-align-test.mjs"]]) {
+for (const [name, script] of [["données + affichage honnête", "tools/check.mjs"], ["rendu sans erreur JS", "tools/render.mjs"],
+  ["carte : vraies tuiles + marqueurs alignés", "tools/map-align-test.mjs"], ["écran : phrases, 390 px, curseur, textes piégés", "tools/screen-test.mjs"],
+  ["cache du téléphone", "tools/sw-test.mjs"]]) {
   console.log(`• Vérification : ${name}…`);
   const r = spawnSync("node", [script], { cwd, encoding: "utf8" });
   if (r.status !== 0) { process.stderr.write((r.stdout || "") + (r.stderr || "")); stop(`échec de ${script}`); }

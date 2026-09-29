@@ -1,0 +1,6 @@
+• cache : 19 entrées, 6 d'un autre site, 7 copie(s) de data.json · mise à jour vue à l'ouverture n° —
+✗ 4 problème(s) de cache :
+  - cache : 6 entrée(s) d'un autre site, ex. https://d.basemaps.cartocdn.com/rastertiles/voyager/11/1032/747.png
+  - cache : 7 copies de data.json (attendu : 1)
+  - mise à jour : nouvelle version jamais vue en 3 ouvertures (attendu : 2 au plus)
+  - hors ligne : une image absente reçoit la page index.html à sa place

@@ -1,0 +1,4 @@
+Fond de carte : 18 tuile(s) reçue(s) de c.basemaps.cartocdn.com, d.basemaps.cartocdn.com, b.basemaps.cartocdn.com, a.basemaps.cartocdn.com · 1 image(s) différente(s)
+  18× image 69be4aecf9f8 (2049 octets, image/png, HTTP 200) ex. https://c.basemaps.cartocdn.com/rastertiles/voyager/12/2063/1495.png
+✗ Tuiles identiques (18 sur 18 sont la même image) : le fournisseur renvoie une image unique, pas une carte
+✓ Marqueurs alignés (13, écart max 0.5 px) — un décalage perçu vient des COORDONNÉES (données)

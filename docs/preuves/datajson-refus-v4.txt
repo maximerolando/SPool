@@ -1,0 +1,3 @@
+• 13 piscines · 11 ouvertes en saison · 10 actus · alerte inactive · maj 2026-09-28
+✗ 1 problème(s):
+  - data.json ne correspond pas aux blocs de index.html → node tools/export-data.mjs

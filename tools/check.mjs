@@ -20,6 +20,10 @@ const errs = [];
 const isYmd = s => /^\d{4}-\d{2}-\d{2}$/.test(s);
 
 if (!isYmd(META.updated)) errs.push("META.updated n'est pas au format AAAA-MM-JJ");
+if (!Number.isInteger(META.minApp)) errs.push("META.minApp manquant (version minimale de l'appli qui sait lire ces données)");
+// data.json (lu par les téléphones) doit être exactement les blocs de index.html
+try { if (JSON.stringify(JSON.parse(readFileSync(new URL("../data.json", import.meta.url), "utf8"))) !== JSON.stringify(data)) errs.push("data.json ne correspond pas aux blocs de index.html → node tools/export-data.mjs"); }
+catch (e) { errs.push("data.json illisible : " + e.message); }
 if (!isYmd(META.seasonFrom) || !isYmd(META.seasonTo)) errs.push("META.season(From|To) invalide");
 if (ALERT.active && !isYmd(ALERT.from)) errs.push("ALERT.from invalide alors que active=true");
 if (!Array.isArray(POOLS) || POOLS.length < 5) errs.push("POOLS trop court");
@@ -43,6 +47,15 @@ for (const p of POOLS) {
 for (const id of Object.keys(ALERT.overrides || {})) if (!ids.has(id)) errs.push(`ALERT.overrides vise un id inconnu : ${id}`);
 for (const n of NEWS) { if (!isYmd(n.date)) errs.push(`NEWS: date invalide (${n.title})`); if (n.pool && !ids.has(n.pool)) errs.push(`NEWS: pool inconnu (${n.pool})`); }
 
+// Textes sûrs : les données sont en partie écrites par le robot à partir de recherches web, et
+// l'appli les affiche. Aucun « < » ni « > » (pas de balise possible), et les liens restent sur le
+// site de la Mairie.
+(function walk(v, path) {
+  if (typeof v === "string") { if (/[<>]/.test(v)) errs.push(`${path} : « < » ou « > » interdit dans un texte (${v.slice(0, 60)})`); }
+  else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) walk(x, Array.isArray(v) ? `${path}[${k}]` : `${path}.${k}`);
+})({ META, ALERT, NEWS, POOLS }, "données");
+for (const p of POOLS) if (!/^https:\/\/metropole\.toulouse\.fr\//.test(p.lien || "")) errs.push(`${p.id}: lien hors du site de la Mairie (${p.lien})`);
+
 const openSummer = POOLS.filter(p => !p.closedInSummer).length;
 console.log(`• ${POOLS.length} piscines · ${openSummer} ouvertes en saison · ${NEWS.length} actus · alerte ${ALERT.active ? "ACTIVE (" + ALERT.type + ")" : "inactive"} · maj ${META.updated}`);
 if (errs.length) { console.error("✗ " + errs.length + " problème(s):\n  - " + errs.join("\n  - ")); process.exit(1); }
@@ -56,9 +69,10 @@ console.log("✓ Données valides");
    - plus de 10 jours après META.updated : tout passe en « horaires non connus » (clé "unknown"). */
 const eStart = html.indexOf("*/", end) + 2, eEnd = html.indexOf("EN DIRECT", eStart);
 let engine;
-try { engine = new Function(block + ";" + html.slice(eStart, html.lastIndexOf("/*", eEnd)) + "; return { liveState };")(); }
+try { engine = new Function(block + ";" + html.slice(eStart, html.lastIndexOf("/*", eEnd)) + "; return { liveState, APP };")(); }
 catch (e) { console.error("✗ MOTEUR illisible :", e.message); process.exit(1); }
 
+if (!(META.minApp <= engine.APP)) { console.error(`✗ META.minApp = ${META.minApp} mais l'appli est en version ${engine.APP} : elle ignorerait ses propres données`); process.exit(1); }
 const STALE_DAYS = 10, WINDOW = 14;
 const bad = [], unknown = new Set();
 const today = new Date(); today.setHours(0, 0, 0, 0);

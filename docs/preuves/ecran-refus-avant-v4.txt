@@ -1,0 +1,21 @@
+✗ 20 problème(s) à l'écran :
+  - phrase · en saison (15/07, 15 h 25) : mesure canicule affichée sans alerte active — « Canicule : 1 € l'entrée et horaires prolongés à 21 h. »
+  - phrase · en saison (15/07, 15 h 25) : horaires de canicule affichés sans alerte active — « Canicule : 1 € l'entrée et horaires prolongés à 21 h »
+  - phrase · en saison (15/07, 15 h 25) : numéro sans source officielle — « Allô Toulouse 31 01 »
+  - phrase · lendemain de la mise à jour, 16 h 25 : mesure canicule affichée sans alerte active — « Canicule : 1 € l'entrée et horaires prolongés à 21 h. »
+  - phrase · lendemain de la mise à jour, 16 h 25 : « été » affiché hors saison — « estival »
+  - phrase · lendemain de la mise à jour, 16 h 25 : « horaires de la saison » affichés hors saison — « HORAIRES DE LA SAISON »
+  - phrase · lendemain de la mise à jour, 16 h 25 : horaires de canicule affichés sans alerte active — « Canicule : 1 € l'entrée et horaires prolongés à 21 h »
+  - phrase · lendemain de la mise à jour, 16 h 25 : « aucune » alors que des horaires sont inconnus — « Aucune piscine ne correspond »
+  - phrase · lendemain de la mise à jour, 16 h 25 : numéro sans source officielle — « Allô Toulouse 31 01 »
+  - phrase · données périmées (+12 jours) : mesure canicule affichée sans alerte active — « Canicule : 1 € l'entrée et horaires prolongés à 21 h. »
+  - phrase · données périmées (+12 jours) : « été » affiché hors saison — « estival »
+  - phrase · données périmées (+12 jours) : « horaires de la saison » affichés hors saison — « HORAIRES DE LA SAISON »
+  - phrase · données périmées (+12 jours) : horaires de canicule affichés sans alerte active — « Canicule : 1 € l'entrée et horaires prolongés à 21 h »
+  - phrase · données périmées (+12 jours) : « aucune » alors que des horaires sont inconnus — « Aucune piscine ne correspond »
+  - phrase · données périmées (+12 jours) : numéro sans source officielle — « Allô Toulouse 31 01 »
+  - 390 px : 2 onglet(s) sur 4 hors de l'écran (Les piscines, Infos & actus)
+  - 390 px : 15 texte(s) coupé(s) dans le tableau, ex. « Horaires non connus »
+  - curseur : après le recalcul, le focus quitte la ligne Papus (→ BODY)
+  - injection : un texte piégé s'exécute ou devient un lien actif (7 exécution(s), 2 lien(s) javascript:)
+  - appli trop ancienne : aucune porte d'entrée des données (acceptData) à vérifier
