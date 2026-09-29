@@ -29,6 +29,17 @@ La nouvelle vérification, lancée sur l'ancien code, a trouvé **364 affichages
 piscines × 14 jours × 2 heures testées ([sortie complète](preuves/check-avant-2026-09-28.txt)).
 Après correction : zéro.
 
+**La deuxième leçon (28–29/09) : un contrôle vert n'est pas ce que voit la personne.** Une revue
+extérieure a trouvé en ligne une carte sans rues, alors que trois contrôles étaient verts. Le
+fournisseur de carte répondait « 200 OK » avec la même image de refus partout : le contrôle
+vérifiait que la carte « se charge », pas qu'elle montre une carte. Depuis la v4, les contrôles
+regardent ce que le navigateur reçoit et affiche vraiment : les images des tuiles, le texte
+visible à 390 px, le contenu du cache du téléphone.
+
+| Carte avant (28/09) | Carte après (v4, en ligne le 29/09) |
+|---|---|
+| ![avant](preuves/avant-390-carte-v4.png) | ![après](preuves/en-ligne-390-carte-v4.png) |
+
 ---
 
 ## Plan d'ensemble
@@ -47,25 +58,28 @@ tools/
   compare-sources.mjs COMPARE : fiche d'aujourd'hui vs dernière version validée
   publish.mjs         publie seulement si tout passe
   render.mjs          captures d'écran + erreurs JavaScript (navigateur)
-  map-align-test.mjs  marqueurs de la carte bien placés (navigateur)
+  map-align-test.mjs  carte : vraies tuiles (images différentes) + marqueurs bien placés (navigateur)
+  screen-test.mjs     écran à 390 px : phrases justes, onglets, textes coupés, curseur, textes piégés (navigateur)
+  sw-test.mjs         cache du téléphone : contenu, mise à jour, hors ligne (navigateur + petit serveur local)
   refresh-instructions.md   feuille de mission de la tâche cloud (ne pas déplacer)
 CLAUDE.md             règles et gestes pour les sessions Claude
 docs/IDEES.md         feuille de route, et tout ce qui n'a pas été construit
-docs/MESURES.md       chrono de l'installation, ce que les vérifications ont attrapé
+docs/MESURES.md       ce que les contrôles ont trouvé, sabotages exprès, chrono
+docs/preuves/         sorties brutes et captures, avant / après
 ```
 
 **Qui fait quoi**
 
 | Acteur | Fait | Ne peut pas |
 |---|---|---|
-| Tâche planifiée Claude (cloud, hebdomadaire) | cherche les nouvelles (canicule, fermetures) par recherche web, édite les blocs de données, `export-data` + `check`, pousse | lire le site de la Mairie (bloqué depuis le cloud) ; faire `npm install` |
+| Tâche planifiée Claude (cloud, hebdomadaire) | tient à jour l'alerte et les actus par recherche web, `export-data` + `check`, pousse ; **signale** les horaires qui semblent avoir changé | modifier un horaire (règle depuis le 29/09) ; lire le site de la Mairie (bloqué depuis le cloud) ; faire `npm install` |
 | Claude sur le PC de Maxime | lit la Mairie (`compare`), corrige, fait des captures, publie après accord | publier sans l'accord de Maxime |
 | GitHub Pages | sert la branche `claude/toulouse-pools-dashboard-31xhxb` | — |
-| Téléphones | rechargent `data.json` ; reçoivent le nouveau code quand le nom de cache de `sw.js` change | — |
+| Téléphones | rechargent `data.json` ; reçoivent le nouveau code au plus tard à la 2ᵉ ouverture après un changement du nom de cache de `sw.js` | lire des données faites pour une appli plus récente (`META.minApp`) : ils passent alors en « non connus » |
 
 ---
 
-## Les 4 pièces installées
+## Les pièces installées, et ce que chacune garantit
 
 Chaque pièce garantit une chose précise. Elle a un test qui la fait échouer exprès, lancé une
 fois lors de l'installation. Elle a aussi un critère de retrait : on la retire quand elle ne sert
@@ -87,6 +101,10 @@ plus.
   Claude après chaque modification.
 - **Tests d'échec exprès** : l'ancien code → 364 cas refusés. Le seuil passé à 30 jours + une
   piscine avec horaires sur un mois → refusé (« Ouverte alors que les données ont 11 jours »).
+- **Aussi (v4)** : les textes des données ne contiennent ni `<` ni `>`, et les liens restent sur
+  le site de la Mairie (ils sont écrits en partie par un robot d'après le web) ; `META.minApp` est
+  présent et ne dépasse pas la version de l'appli ; `data.json` est exactement les blocs
+  d'index.html (les téléphones lisent `data.json`).
 - **Retrait** : si le calcul des horaires sort d'index.html avec ses propres tests.
 
 ### 2. Comparaison avec la Mairie — `npm run compare`
@@ -113,7 +131,8 @@ plus.
 - **Pourquoi ici** : `sw.js` sert index.html depuis son cache. Sans nouveau nom de cache, une
   correction serait en ligne mais invisible sur les téléphones. Autre raison : la tâche cloud
   pousse sur la même branche, donc on récupère d'abord ses envois et on vérifie l'ensemble.
-- **Comment** : arbre propre → `git pull --rebase` → `check` → `render` → `map-test` → si le code
+- **Comment** : arbre propre → `git pull --rebase` → `check` → `render` → `map-test` →
+  `screen-test` → `sw-test` → si le code
   d'index.html a changé, le nom de cache de `sw.js` doit avoir changé → `git push`.
   `-- --dry-run` fait tout sauf l'envoi.
 - **Lancée par** : Claude, seulement après l'accord de Maxime.
@@ -123,11 +142,60 @@ plus.
 - **Retrait** : si la publication passe un jour par une GitHub Action qui vérifie avant de
   déployer (voir [IDEES.md](IDEES.md)).
 
-### 4. Règles et gestes — `CLAUDE.md`
-Cinq règles courtes : ne jamais afficher un état faux ; ne jamais casser la tâche cloud ; publier
-seulement par `npm run publish` après accord ; les données viennent des fiches officielles ; ne
-jamais ajouter d'outil sans garantie précise. S'y ajoute le tableau « Maxime dit → Claude fait »
-(ci-dessous).
+### 4. La carte montre une carte — `tools/map-align-test.mjs`
+- **Garantit** : le fond de carte est fait de vraies images, et les marqueurs sont à leur place.
+- **Pourquoi ici** : la panne du 28/09 au soir (18 tuiles, 1 seule image « API KEY REQUIRED »).
+- **Comment** : relève les tuiles réellement reçues par le navigateur, une fois la couche de fond
+  chargée (pas une attente fixe) ; refuse si aucune n'arrive ou si plus de la moitié sont la même
+  image. Jamais « rien à signaler » par défaut.
+- **Lancée par** : `npm run publish`.
+- **Tests d'échec exprès** : l'ancien fournisseur → refusé (1 image pour 18 tuiles) ; adresse des
+  tuiles cassée → refusé (« Aucune tuile reçue »).
+- **Retrait** : si la carte disparaît de l'appli.
+
+### 5. L'écran ne dit pas plus que ce que l'appli sait — `tools/screen-test.mjs`
+- **Garantit**, à 390 px de large :
+  - à trois moments (en saison ; lendemain de la mise à jour ; données périmées), aucune phrase
+    visible ne contredit l'état : pas de canicule sans alerte, pas d'« été » hors saison, pas
+    d'« aucune » ni de « 0 ouverte » quand des horaires sont inconnus, pas de numéro sans source ;
+  - les 4 onglets entrent dans l'écran, et aucun état n'est coupé ;
+  - le curseur clavier reste en place quand l'écran se recalcule ;
+  - des données piégées, reçues par la porte d'entrée des données distantes, s'affichent comme
+    du texte ;
+  - une appli trop ancienne pour les données passe en « non connus ».
+- **Pourquoi ici** : chaque règle correspond à un défaut trouvé en ligne (voir
+  [MESURES.md](MESURES.md)).
+- **Lancée par** : `npm run publish`.
+- **Tests d'échec exprès** : la version d'avant → 20 refus ; neutralisation des textes désactivée,
+  tableau réécrit sans garder le curseur, numéro sans source remis → refusés un par un.
+- **Retrait** : une règle de phrase part quand la phrase qu'elle surveille n'existe plus dans
+  l'appli.
+
+### 6. Le cache du téléphone — `tools/sw-test.mjs`
+- **Garantit** :
+  - rien d'un autre site n'est gardé par le service worker, et une seule copie de `data.json` ;
+  - une nouvelle version s'affiche au plus tard à la 2ᵉ ouverture ;
+  - l'appli s'ouvre hors ligne.
+- **Pourquoi ici** : l'ancien cache figeait l'image de refus de la carte, et bloquait les
+  téléphones installés sur leur ancienne version (jamais mise à jour en 3 ouvertures).
+- **Comment** : sert le site en HTTP, avec le même délai de cache que GitHub Pages (10 min). Ouvre
+  la carte, actualise 5 fois, puis publie une « nouvelle version » sur ce serveur local et compte
+  les ouvertures nécessaires.
+- **Lancée par** : `npm run publish`.
+- **Tests d'échec exprès** : l'ancien `sw.js` → 4 refus ; installation sans contourner le cache du
+  navigateur → refusé ; autres sites de nouveau en cache → refusé.
+- **Retrait** : si l'appli cesse d'être installable (plus de `sw.js`).
+
+### 7. Règles et gestes — `CLAUDE.md`
+Six règles courtes :
+1. ne jamais afficher un état faux ;
+2. ne jamais casser la tâche cloud ;
+3. publier seulement par `npm run publish`, après accord ;
+4. les données viennent des fiches officielles ;
+5. le robot signale les horaires, il ne les modifie pas ;
+6. ne jamais ajouter d'outil sans garantie précise.
+
+S'y ajoute le tableau « Maxime dit → Claude fait » (ci-dessous).
 
 ---
 
@@ -143,10 +211,30 @@ jamais ajouter d'outil sans garantie précise. S'y ajoute le tableau « Maxime d
 | Tâche planifiée sur le PC | La comparaison se lance à la demande. On verra si l'oubli devient un problème. |
 | Lecture automatique des horaires Mairie → données | Format trop variable. Claude lit l'écart et corrige : plus sûr → [IDEES.md](IDEES.md). |
 | Framework web, serveur, compte à créer | Le projet est petit. Le setup doit le rester. |
+| Politique de sécurité du contenu (CSP) | Tout est dans un seul fichier, scripts compris : une CSP devrait autoriser le code en ligne, et ne protégerait presque rien. La protection est ailleurs : textes neutralisés à leur entrée, et refusés dans les données par `check`. |
 
-**Limite connue** : le compteur du haut (« 0 ouverte » → « ? ») est calculé dans l'affichage,
-pas dans le `MOTEUR`, donc `check` ne le voit pas. C'est la capture d'écran qui l'a attrapé. Si
-d'autres affirmations de ce genre apparaissent, il faudra les faire passer par le `MOTEUR`.
+**Limite connue** : `check`, qui tourne dans le cloud, ne voit que le calcul (`MOTEUR`), pas
+l'affichage. Ce qui est calculé dans l'affichage, comme le compteur du haut ou les phrases,
+n'est surveillé que par `screen-test`, sur le PC, à chaque publication. Un envoi du robot ne
+passe donc pas par `screen-test` : c'est la raison de la future « porte GitHub » (voir
+[IDEES.md](IDEES.md)).
+
+---
+
+## Décisions de Maxime
+
+| Date | Décision |
+|---|---|
+| 28/09 | L'appli sert d'abord à Maxime et ses proches ; un usage public, puis un contact avec la Métropole, viendront si ça se passe bien. |
+| 28/09 | Quand les données sont fausses ou trop vieilles, l'appli se protège seule (« horaires non connus »), sans système d'alerte. Seuil : 10 jours. |
+| 28/09 | La collecte des données reste séparée, pour pouvoir changer de source (open data, cloud, Métropole). |
+| 28/09 | Maxime parle à Claude ; Claude publie seulement après son accord. |
+| 28/09 | La session cloud « multi-créneaux » est abandonnée. |
+| 28/09 | Commits sous son adresse GitHub privée (noreply), pour ce dépôt seulement. |
+| 28/09 | Publier « horaires non connus » (11 h 46), puis la documentation (11 h 51). |
+| 29/09 | Fond de carte : Plan IGN (service public, sans clé ni compte, Licence Ouverte, crédit affiché). |
+| 29/09 | Le robot du cloud ne modifie plus aucun horaire : il le signale. |
+| 29/09 | Publier la v4, avec les nouvelles formulations des phrases (12 h 25). Vérifiée sur son téléphone : « tout est bon ». |
 
 ---
 

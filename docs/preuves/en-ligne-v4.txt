@@ -1,0 +1,5 @@
+Site en ligne https://maximerolando.github.io/SPool/ (29/09/2026 12:26:31) — « Piscines de Toulouse — appli indépendante », APP=4, page contrôlée par le service worker : true
+Tuiles reçues : 6 de data.geopf.fr · 6 images différentes
+  7cbcca48d847 (58667 octets) https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX=11&TILEROW=746&TILECOL=1031&FORMAT=image/png
+  b007ae2500b6 (61523 octets) https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX=11&TILEROW=746&TILECOL=1032&FORMAT=image/png
+Cache du service worker : 7 entrées, dont 0 d'un autre site, 1 copie(s) de data.json, nom : piscines-tls-v4
