@@ -1147,7 +1147,7 @@ body.kiosk .ns-open b{font-size:clamp(2.6rem,8vw,4.2rem)}
    3) NEWS[]  4) POOLS[].schedules  →  le reste (live, carte, board) se régénère.
    Horaires en heures décimales (20.5 = 20 h 30). days: "all"|"weekdays"|"weekends"|[0..6].
    ═══════════════════════════════════════════════════════════════════════════ */
-let META = { updated:"2026-09-28", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13", minApp:4 };
+let META = { updated:"2026-10-01", season:"Été 2026", seasonFrom:"2026-06-05", seasonTo:"2026-09-13", minApp:4 };
 
 /* Alerte (canicule été 2026) — levée : la saison estivale est terminée. */
 let ALERT = {
@@ -1163,6 +1163,8 @@ let ALERT = {
 };
 
 let NEWS = [
+  { date:"2026-10-01", type:"travaux", pool:"toulouse-lautrec", title:"Toulouse-Lautrec : halle couverte en rénovation",
+    body:"Le bassin intérieur et la halle Tournesol sont fermés pour rénovation, avec une réouverture annoncée en 2027. Le nouveau bassin extérieur de 50 m « Gisèle Vallerey » reste ouvert toute l'année (source : Mairie de Toulouse)." },
   { date:"2026-09-14", type:"ouverture", pool:"leo-lagrange", title:"Léo Lagrange a rouvert",
     body:"La piscine olympique du centre a rouvert avec ses horaires de l'année scolaire (créneaux matin/soir variables selon les jours — voir la fiche officielle avant d'y aller)." },
   { date:"2026-08-30", type:"fermeture", pool:null, title:"Fin de la saison estivale",
@@ -1180,9 +1182,7 @@ let NEWS = [
   { date:"2026-06-05", type:"ouverture", pool:"nakache-ete", title:"Nakache été ouvre",
     body:"Le bassin extérieur mythique de l'île du Ramier rouvre — seule piscine sans bonnet obligatoire. Castex ouvre aussi tous les jours." },
   { date:"2026-06-05", type:"fermeture", pool:"leo-lagrange", title:"Léo Lagrange ferme pour l'été",
-    body:"Fermeture au public : clubs en juillet, vidange en août, réouverture à la rentrée." },
-  { date:"2026-05-18", type:"ouverture", pool:"toulouse-lautrec", title:"Nouveau bassin 50 m « Gisèle Vallerey »",
-    body:"Toulouse-Lautrec s'agrandit d'un nouveau bassin sportif de 50 m au nord de la ville." }
+    body:"Fermeture au public : clubs en juillet, vidange en août, réouverture à la rentrée." }
 ];
 
 let POOLS = [

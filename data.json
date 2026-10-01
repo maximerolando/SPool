@@ -1,6 +1,6 @@
 {
  "META": {
-  "updated": "2026-09-28",
+  "updated": "2026-10-01",
   "season": "Été 2026",
   "seasonFrom": "2026-06-05",
   "seasonTo": "2026-09-13",
@@ -40,6 +40,13 @@
   }
  },
  "NEWS": [
+  {
+   "date": "2026-10-01",
+   "type": "travaux",
+   "pool": "toulouse-lautrec",
+   "title": "Toulouse-Lautrec : halle couverte en rénovation",
+   "body": "Le bassin intérieur et la halle Tournesol sont fermés pour rénovation, avec une réouverture annoncée en 2027. Le nouveau bassin extérieur de 50 m « Gisèle Vallerey » reste ouvert toute l'année (source : Mairie de Toulouse)."
+  },
   {
    "date": "2026-09-14",
    "type": "ouverture",
@@ -102,13 +109,6 @@
    "pool": "leo-lagrange",
    "title": "Léo Lagrange ferme pour l'été",
    "body": "Fermeture au public : clubs en juillet, vidange en août, réouverture à la rentrée."
-  },
-  {
-   "date": "2026-05-18",
-   "type": "ouverture",
-   "pool": "toulouse-lautrec",
-   "title": "Nouveau bassin 50 m « Gisèle Vallerey »",
-   "body": "Toulouse-Lautrec s'agrandit d'un nouveau bassin sportif de 50 m au nord de la ville."
   }
  ],
  "POOLS": [
