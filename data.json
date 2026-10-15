@@ -1,6 +1,6 @@
 {
  "META": {
-  "updated": "2026-10-12",
+  "updated": "2026-10-15",
   "season": "Été 2026",
   "seasonFrom": "2026-06-05",
   "seasonTo": "2026-09-13",
@@ -40,6 +40,13 @@
   }
  },
  "NEWS": [
+  {
+   "date": "2026-10-15",
+   "type": "info",
+   "pool": null,
+   "title": "Toussaint : activités aquatiques dans les piscines",
+   "body": "Pendant les deux semaines de vacances (du 19 au 30 octobre), la Mairie propose des cours de natation, jardin d'eau dès 4 ans et activités aquatiques dans plusieurs piscines municipales, dont Jean Boiteux. Inscriptions en cours auprès de la Mairie."
+  },
   {
    "date": "2026-10-01",
    "type": "travaux",
@@ -102,13 +109,6 @@
    "pool": "nakache-ete",
    "title": "Nakache été ouvre",
    "body": "Le bassin extérieur mythique de l'île du Ramier rouvre — seule piscine sans bonnet obligatoire. Castex ouvre aussi tous les jours."
-  },
-  {
-   "date": "2026-06-05",
-   "type": "fermeture",
-   "pool": "leo-lagrange",
-   "title": "Léo Lagrange ferme pour l'été",
-   "body": "Fermeture au public : clubs en juillet, vidange en août, réouverture à la rentrée."
   }
  ],
  "POOLS": [
